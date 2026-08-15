@@ -44,7 +44,7 @@ function WorkspaceGrid(): React.JSX.Element {
 
   return (
     <div>
-      <div className="workspace-grid grid grid-cols-12 auto-rows-[80px] gap-4 p-4">
+      <div className="workspace-grid grid grid-cols-12 auto-rows-[80px] gap-1">
         {modules.map((module) => (
           <Module key={module.id} module={module} />
         ))}
