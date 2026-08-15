@@ -15,7 +15,7 @@ interface WorkspaceState {
   modules: WorkspaceModule[];
   addModule: (module: WorkspaceModule) => void;
   removeModule: (id: string) => void;
-  resizeModule: (id: string, w: number, h: number) => void;
+  setModules: (modules: WorkspaceModule[]) => void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>((set) => ({
@@ -24,10 +24,5 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     set((state) => ({ modules: [...state.modules, module] })),
   removeModule: (id) =>
     set((state) => ({ modules: state.modules.filter((m) => m.id !== id) })),
-  resizeModule: (id, w, h) =>
-    set((state) => ({
-      modules: state.modules.map((m) =>
-        m.id === id ? { ...m, w: Math.max(1, w), h: Math.max(1, h) } : m
-      ),
-    })),
+  setModules: (modules) => set({ modules }),
 }));

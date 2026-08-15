@@ -1,7 +1,1 @@
 @import "tailwindcss";
-
-.workspace-grid.resizing {
-  background-image:
-    repeating-linear-gradient(to right, #d1d5db 0, #d1d5db 1px, transparent 1px, transparent var(--col-step)),
-    repeating-linear-gradient(to bottom, #d1d5db 0, #d1d5db 1px, transparent 1px, transparent var(--row-step));
-}

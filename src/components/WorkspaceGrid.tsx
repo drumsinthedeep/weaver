@@ -1,36 +1,20 @@
-import { useWorkspaceStore, WorkspaceModule } from '../store/workspaceGridStore';
+import ReactGridLayout, { useContainerWidth, Layout } from 'react-grid-layout';
+import { useWorkspaceStore } from '../store/workspaceGridStore';
 import Module from './Module';
 
 const GRID_COLUMNS = 12;
 
-function findNextPosition(modules: WorkspaceModule[], w: number) {
-  const rowRightEdges = new Map<number, number>();
-  modules.forEach((module) => {
-    const rightEdge = module.x + module.w;
-    rowRightEdges.set(module.y, Math.max(rowRightEdges.get(module.y) ?? 0, rightEdge));
-  });
-
-  const rowWithSpace = [...rowRightEdges.entries()]
-    .sort(([rowA], [rowB]) => rowA - rowB)
-    .find(([, rightEdge]) => rightEdge + w <= GRID_COLUMNS);
-
-  if (rowWithSpace) {
-    const [y, x] = rowWithSpace;
-    return { x, y };
-  }
-
-  const nextY = modules.reduce((bottomEdge, module) => Math.max(bottomEdge, module.y + module.h), 0);
-  return { x: 0, y: nextY };
-}
-
 function WorkspaceGrid(): React.JSX.Element {
   const modules = useWorkspaceStore((state) => state.modules);
   const addModule = useWorkspaceStore((state) => state.addModule);
+  const setModules = useWorkspaceStore((state) => state.setModules);
+  const { width, containerRef, mounted } = useContainerWidth();
 
   const handleAddModule = () => {
     const w = 4;
     const h = 4;
-    const { x, y } = findNextPosition(modules, w);
+    const x = (modules.length * w) % GRID_COLUMNS;
+    const y = modules.reduce((bottomEdge, module) => Math.max(bottomEdge, module.y + module.h), 0);
 
     addModule({
       id: crypto.randomUUID(),
@@ -42,12 +26,49 @@ function WorkspaceGrid(): React.JSX.Element {
     });
   };
 
+  const handleLayoutChange = (layout: Layout) => {
+    const changed = layout.some((item) => {
+      const module = modules.find((m) => m.id === item.i);
+      return (
+        !module ||
+        module.x !== item.x ||
+        module.y !== item.y ||
+        module.w !== item.w ||
+        module.h !== item.h
+      );
+    });
+    if (!changed) return;
+
+    const next = modules.map((module) => {
+      const item = layout.find((l) => l.i === module.id);
+      return item ? { ...module, x: item.x, y: item.y, w: item.w, h: item.h } : module;
+    });
+    setModules(next);
+  };
+
+  const layout: Layout = modules.map((module) => ({
+    i: module.id,
+    x: module.x,
+    y: module.y,
+    w: module.w,
+    h: module.h,
+  }));
+
   return (
     <div>
-      <div className="workspace-grid grid grid-cols-12 auto-rows-[80px] gap-1">
-        {modules.map((module) => (
-          <Module key={module.id} module={module} />
-        ))}
+      <div ref={containerRef as React.RefObject<HTMLDivElement>}>
+        {mounted && (
+          <ReactGridLayout
+            layout={layout}
+            width={width}
+            gridConfig={{ rowHeight: 80 }}
+            onLayoutChange={handleLayoutChange}
+          >
+            {modules.map((module) => (
+              <Module key={module.id} module={module} />
+            ))}
+          </ReactGridLayout>
+        )}
       </div>
       <button type="button" onClick={handleAddModule}>
         add module
