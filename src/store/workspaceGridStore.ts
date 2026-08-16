@@ -10,6 +10,7 @@ export interface WorkspaceModule {
   y: number;
   w: number;
   h: number;
+  content?: string;
 }
 
 interface WorkspaceState {
@@ -17,6 +18,7 @@ interface WorkspaceState {
   addModule: (module: WorkspaceModule) => void;
   removeModule: (id: string) => void;
   setModules: (modules: WorkspaceModule[]) => void;
+  updateModuleContent: (id: string, content: string) => void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -28,6 +30,10 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       removeModule: (id) =>
         set((state) => ({ modules: state.modules.filter((m) => m.id !== id) })),
       setModules: (modules) => set({ modules }),
+      updateModuleContent: (id, content) =>
+        set((state) => ({
+          modules: state.modules.map((m) => (m.id === id ? { ...m, content } : m)),
+        })),
     }),
     { name: 'weaver-workspace' }
   )

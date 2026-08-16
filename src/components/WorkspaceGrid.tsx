@@ -18,7 +18,7 @@ function WorkspaceGrid(): React.JSX.Element {
 
     addModule({
       id: crypto.randomUUID(),
-      type: 'browser',
+      type: 'notes',
       x,
       y,
       w,
@@ -62,6 +62,7 @@ function WorkspaceGrid(): React.JSX.Element {
             layout={layout}
             width={width}
             gridConfig={{ rowHeight: 80 }}
+            dragConfig={{ cancel: 'textarea' }}
             onLayoutChange={handleLayoutChange}
           >
             {modules.map((module) => (
