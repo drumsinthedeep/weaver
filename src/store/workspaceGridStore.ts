@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type ModuleType = 'browser' | 'notes' | 'tasks';
 
@@ -18,11 +19,16 @@ interface WorkspaceState {
   setModules: (modules: WorkspaceModule[]) => void;
 }
 
-export const useWorkspaceStore = create<WorkspaceState>((set) => ({
-  modules: [],
-  addModule: (module) =>
-    set((state) => ({ modules: [...state.modules, module] })),
-  removeModule: (id) =>
-    set((state) => ({ modules: state.modules.filter((m) => m.id !== id) })),
-  setModules: (modules) => set({ modules }),
-}));
+export const useWorkspaceStore = create<WorkspaceState>()(
+  persist(
+    (set) => ({
+      modules: [],
+      addModule: (module) =>
+        set((state) => ({ modules: [...state.modules, module] })),
+      removeModule: (id) =>
+        set((state) => ({ modules: state.modules.filter((m) => m.id !== id) })),
+      setModules: (modules) => set({ modules }),
+    }),
+    { name: 'weaver-workspace' }
+  )
+);
