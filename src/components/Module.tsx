@@ -16,13 +16,18 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     <div
       ref={ref}
       style={style}
-      className={`flex flex-col border border-gray-300 bg-white p-2 ${className ?? ''}`}
+      className={`flex flex-col border border-border-subtle shadow-subtle bg-white rounded-[12px] ${className ?? ''}`}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onTouchEnd={onTouchEnd}
       {...rest}
     >
-      <h2>{module.type}</h2>
+      <div className="card-header items-center cursor-grab bg-secondary-gray border-b border-border-subtle flex p-[10px] rounded-t-[12px] text-text-gray uppercase">
+        <div className="w-[21px]">
+          <img src="/icons/drag.svg" alt="" draggable={false} />
+        </div>
+        <h3 className="text-xs">{module.type}</h3>
+      </div>
       <p>
         Position: ({module.x}, {module.y}), Size: ({module.w} x {module.h})
       </p>

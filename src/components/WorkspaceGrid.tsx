@@ -56,13 +56,23 @@ function WorkspaceGrid(): React.JSX.Element {
 
   return (
     <div>
-      <div ref={containerRef as React.RefObject<HTMLDivElement>}>
+      <div ref={containerRef as React.RefObject<HTMLDivElement>} className="bg-primary-gray">
         {mounted && (
           <ReactGridLayout
             layout={layout}
             width={width}
             gridConfig={{ rowHeight: 80 }}
-            dragConfig={{ cancel: 'textarea' }}
+            resizeConfig={{
+              handleComponent: (_axis, ref) => (
+                <div
+                  ref={ref as React.RefObject<HTMLDivElement>}
+                  className="absolute bottom-0 right-0 h-4 w-4 resize-handle m-1"
+                >
+                  <img src="/icons/resize.svg" alt="" className="w-full" />
+                </div>
+              ),
+            }}
+            dragConfig={{ cancel: 'textarea', handle: '.card-header' }}
             onLayoutChange={handleLayoutChange}
           >
             {modules.map((module) => (
