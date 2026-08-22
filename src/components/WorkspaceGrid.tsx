@@ -18,7 +18,7 @@ function WorkspaceGrid(): React.JSX.Element {
 
     addModule({
       id: crypto.randomUUID(),
-      type: 'notes',
+      type: 'browser',
       x,
       y,
       w,
