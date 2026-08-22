@@ -3,6 +3,12 @@ import { persist } from 'zustand/middleware';
 
 export type ModuleType = 'browser' | 'notes' | 'tasks';
 
+export interface Task {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
 export interface WorkspaceModule {
   id: string;
   type: ModuleType;
@@ -12,6 +18,7 @@ export interface WorkspaceModule {
   h: number;
   content?: string;
   url?: string;
+  tasks?: Task[];
 }
 
 interface WorkspaceState {
@@ -21,6 +28,9 @@ interface WorkspaceState {
   setModules: (modules: WorkspaceModule[]) => void;
   updateModuleContent: (id: string, content: string) => void;
   updateModuleUrl: (id: string, url: string) => void;
+  addTask: (moduleId: string, label: string) => void;
+  toggleTask: (moduleId: string, taskId: string) => void;
+  removeTask: (moduleId: string, taskId: string) => void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -39,6 +49,31 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       updateModuleUrl: (id, url) =>
         set((state) => ({
           modules: state.modules.map((m) => (m.id === id ? { ...m, url } : m)),
+        })),
+      addTask: (moduleId, label) =>
+        set((state) => ({
+          modules: state.modules.map((m) =>
+            m.id === moduleId
+              ? { ...m, tasks: [...(m.tasks ?? []), { id: crypto.randomUUID(), label, done: false }] }
+              : m
+          ),
+        })),
+      toggleTask: (moduleId, taskId) =>
+        set((state) => ({
+          modules: state.modules.map((m) =>
+            m.id === moduleId
+              ? {
+                  ...m,
+                  tasks: (m.tasks ?? []).map((t) => (t.id === taskId ? { ...t, done: !t.done } : t)),
+                }
+              : m
+          ),
+        })),
+      removeTask: (moduleId, taskId) =>
+        set((state) => ({
+          modules: state.modules.map((m) =>
+            m.id === moduleId ? { ...m, tasks: (m.tasks ?? []).filter((t) => t.id !== taskId) } : m
+          ),
         })),
     }),
     { name: 'weaver-workspace' }

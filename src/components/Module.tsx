@@ -12,6 +12,9 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   const removeModule = useWorkspaceStore((state) => state.removeModule);
   const updateModuleContent = useWorkspaceStore((state) => state.updateModuleContent);
   const updateModuleUrl = useWorkspaceStore((state) => state.updateModuleUrl);
+  const addTask = useWorkspaceStore((state) => state.addTask);
+  const toggleTask = useWorkspaceStore((state) => state.toggleTask);
+  const removeTask = useWorkspaceStore((state) => state.removeTask);
 
   const handleUrlSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
@@ -19,6 +22,14 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     if (!value) return;
     const url = /^https?:\/\//.test(value) ? value : `https://${value}`;
     updateModuleUrl(module.id, url);
+  };
+
+  const handleAddTask = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    const value = e.currentTarget.value.trim();
+    if (!value) return;
+    addTask(module.id, value);
+    e.currentTarget.value = '';
   };
 
   return (
@@ -35,7 +46,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
         <div className="w-[21px]">
           <img src="/icons/drag.svg" alt="" draggable={false} />
         </div>
-        <img src={`/icons/${module.type}.svg`} alt="" className={`mx-1 ${module.type === 'notes' ? 'w-3' : 'w-4'}`} draggable={false} />
+        <img src={`/icons/${module.type}.svg`} alt="" className={`mx-1 ${module.type === 'notes' ? 'w-3' : module.type === 'tasks' ? 'w-[14px]' : 'w-4'}`} draggable={false} />
         <h3 className="text-xs">{module.type}</h3>
       </div>
       {module.type === 'browser' && (
@@ -62,7 +73,33 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           className="w-full flex-1 resize-none border-none p-0 outline-none"
         />
       )}
-      {module.type === 'tasks' && <p>tasks</p>}
+      {module.type === 'tasks' && (
+        <div className="flex flex-1 flex-col overflow-auto p-2">
+          <input
+            type="text"
+            onKeyDown={handleAddTask}
+            placeholder="Add a task and press Enter"
+            className="border-b border-border-subtle p-1 text-sm outline-none"
+          />
+          <ul className="mt-2 flex flex-col gap-1">
+            {(module.tasks ?? []).map((task) => (
+              <li key={task.id} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={task.done}
+                  onChange={() => toggleTask(module.id, task.id)}
+                />
+                <span className={`flex-1 ${task.done ? 'text-text-gray line-through' : ''}`}>
+                  {task.label}
+                </span>
+                <button type="button" onClick={() => removeTask(module.id, task.id)}>
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       <button type="button" onClick={() => removeModule(module.id)}>
         remove module
       </button>
