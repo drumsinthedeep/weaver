@@ -1,6 +1,7 @@
 import ReactGridLayout, { useContainerWidth, Layout } from 'react-grid-layout';
 import { useWorkspaceStore } from '../store/workspaceGridStore';
 import Module from './Module';
+import Header from './Header';
 
 const GRID_COLUMNS = 12;
 
@@ -56,7 +57,8 @@ function WorkspaceGrid(): React.JSX.Element {
 
   return (
     <div>
-      <div ref={containerRef as React.RefObject<HTMLDivElement>} className="bg-primary-gray">
+      <Header onAddModule={handleAddModule} />
+      <div ref={containerRef as React.RefObject<HTMLDivElement>} className="bg-primary-gray mt-3">
         {mounted && (
           <ReactGridLayout
             layout={layout}
@@ -81,9 +83,6 @@ function WorkspaceGrid(): React.JSX.Element {
           </ReactGridLayout>
         )}
       </div>
-      <button type="button" onClick={handleAddModule}>
-        add module
-      </button>
     </div>
   );
 }
