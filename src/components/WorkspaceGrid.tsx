@@ -1,31 +1,11 @@
 import ReactGridLayout, { useContainerWidth, Layout } from 'react-grid-layout';
 import { useWorkspaceStore } from '../store/workspaceGridStore';
 import Module from './Module';
-import Header from './Header';
-
-const GRID_COLUMNS = 12;
 
 function WorkspaceGrid(): React.JSX.Element {
   const modules = useWorkspaceStore((state) => state.modules);
-  const addModule = useWorkspaceStore((state) => state.addModule);
   const setModules = useWorkspaceStore((state) => state.setModules);
   const { width, containerRef, mounted } = useContainerWidth();
-
-  const handleAddModule = () => {
-    const w = 4;
-    const h = 4;
-    const x = (modules.length * w) % GRID_COLUMNS;
-    const y = modules.reduce((bottomEdge, module) => Math.max(bottomEdge, module.y + module.h), 0);
-
-    addModule({
-      id: crypto.randomUUID(),
-      type: 'tasks',
-      x,
-      y,
-      w,
-      h,
-    });
-  };
 
   const handleLayoutChange = (layout: Layout) => {
     const changed = layout.some((item) => {
@@ -57,7 +37,6 @@ function WorkspaceGrid(): React.JSX.Element {
 
   return (
     <div>
-      <Header onAddModule={handleAddModule} />
       <div ref={containerRef as React.RefObject<HTMLDivElement>} className="bg-primary-gray mt-3">
         {mounted && (
           <ReactGridLayout
