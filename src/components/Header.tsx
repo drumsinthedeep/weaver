@@ -21,7 +21,7 @@ export default function Header() {
   };
 
   return (
-    <div className="flex items-center sticky top-0 z-10 justify-between bg-white border-b border-border-subtle px-4 py-2 mr-[-14px]">
+    <div className="flex items-center sticky top-0 z-10 justify-between bg-white border-b border-border-subtle px-4 py-4 mr-[-14px]">
       <h1 className="text-lg font-semibold text-text-gray">Workspace</h1>
       <button
         onClick={handleAddModule}
