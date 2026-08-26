@@ -1,4 +1,6 @@
 #root {
   padding: 0 14px;
   background-color: var(--color-primary-gray);
+  font-family: "Roboto Condensed", sans-serif;
+  letter-spacing: .025rem;
 }

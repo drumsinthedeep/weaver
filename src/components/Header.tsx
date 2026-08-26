@@ -22,7 +22,7 @@ export default function Header() {
 
   return (
     <div className="flex items-center sticky top-0 z-10 justify-between bg-white border-b border-border-subtle px-4 py-4 mr-[-14px]">
-      <h1 className="text-lg font-semibold text-text-gray">Workspace</h1>
+      <h1 className="text-lg font-semibold text-text-gray">Breadcrumbs</h1>
       <button
         onClick={handleAddModule}
         className="flex items-center gap-2 rounded-md bg-primary-purple px-[14px] py-[6px] text-sm font-medium text-white hover:bg-primary-purple/90"

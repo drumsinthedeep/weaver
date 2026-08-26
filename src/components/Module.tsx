@@ -46,7 +46,10 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
         <div className="w-[21px]">
           <img src="/icons/drag.svg" alt="" draggable={false} />
         </div>
-        <img src={`/icons/${module.type}.svg`} alt="" className={`mx-1 ${module.type === 'notes' ? 'w-3' : module.type === 'tasks' ? 'w-[14px]' : 'w-4'}`} draggable={false} />
+        <span
+          className={`mx-1 bg-text-gray ${module.type === 'notes' ? 'w-3 h-3' : module.type === 'tasks' ? 'w-[14px] h-[14px]' : 'w-4 h-4'} [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]`}
+          style={{ maskImage: `url(/icons/${module.type}.svg)` }}
+        />
         <h3 className="text-xs">{module.type}</h3>
       </div>
       {module.type === 'browser' && (
