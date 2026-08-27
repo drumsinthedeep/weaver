@@ -42,8 +42,8 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
       onTouchEnd={onTouchEnd}
       {...rest}
     >
-      <div className="card-header items-center cursor-grab bg-secondary-gray border-b border-border-subtle flex py-[10px] px-[8px] rounded-t-[12px] text-text-gray uppercase">
-        <div className="w-[21px]">
+      <div className="card-header items-center bg-secondary-gray border-b border-border-subtle flex py-[10px] px-[8px] rounded-t-[12px] text-text-gray uppercase">
+        <div className="w-[21px] drag-target cursor-grab">
           <img src="/icons/drag.svg" alt="" draggable={false} />
         </div>
         <span
@@ -51,6 +51,9 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           style={{ maskImage: `url(/icons/${module.type}.svg)` }}
         />
         <h3 className="text-xs">{module.type}</h3>
+        <button className="ml-auto flex items-center cursor-pointer">
+          <span className="mr-2 inline-block w-[14px] h-[14px] bg-text-gray [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+        </button>
       </div>
       {module.type === 'browser' && (
         <div className="flex flex-1 flex-col">

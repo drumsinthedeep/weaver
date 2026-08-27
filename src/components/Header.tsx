@@ -25,7 +25,7 @@ export default function Header() {
       <h1 className="text-lg font-semibold text-text-gray">Breadcrumbs</h1>
       <button
         onClick={handleAddModule}
-        className="flex items-center gap-2 rounded-md bg-primary-purple px-[14px] py-[6px] text-sm font-medium text-white hover:bg-primary-purple/90"
+        className="flex items-center cursor-pointer gap-2 rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:bg-primary-purple/90"
       >
         <img src="/icons/add.svg" alt="" className="w-4" />
         Add Module

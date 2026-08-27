@@ -24,7 +24,7 @@ export default function Sidebar() {
         </a>
       </div>
       <div className="flex flex-col mt-auto border-t border-border-subtle">
-        <button className="group text-light-black p-2 flex items-center hover:bg-hover-gray hover:text-primary-purple rounded">
+        <button className="group cursor-pointer text-light-black p-2 flex items-center hover:bg-hover-gray hover:text-primary-purple rounded">
           <span className="mr-2 inline-block h-5 w-5 bg-text-gray group-hover:bg-primary-purple [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
           Settings
         </button>

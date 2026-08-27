@@ -53,7 +53,7 @@ function WorkspaceGrid(): React.JSX.Element {
                 </div>
               ),
             }}
-            dragConfig={{ cancel: 'textarea', handle: '.card-header' }}
+            dragConfig={{ cancel: 'textarea', handle: '.drag-target' }}
             onLayoutChange={handleLayoutChange}
           >
             {modules.map((module) => (
