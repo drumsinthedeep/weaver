@@ -2,7 +2,7 @@ export default function Sidebar() {
   return (
     <div className="flex flex-col gap-2 bg-white border-r border-border-subtle p-2 ml-[-14px] sticky top-0 z-10 h-screen w-[200px]">
       <div className="flex flex-row p-3 pl-2 items-center">
-        <img src="/icons/weaver-logo.png" alt="" className="w-[40px] inline-block mr-2" />
+        <img src="/icons/weaver-logo.svg" alt="" className="w-[40px] inline-block mr-2" />
         <h1 className="font-raleway text-lg font-semibold">WEAVER</h1>
       </div>
       <div className="flex flex-col">
