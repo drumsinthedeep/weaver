@@ -2,6 +2,7 @@ import './App.css';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import WorkspaceGrid from './components/WorkspaceGrid';
+import AddModuleModal from './components/AddModuleModal';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <div className="flex flex-1 flex-col">
         <Header />
         <WorkspaceGrid />
+        <AddModuleModal />
       </div>
     </div>
   );

@@ -51,8 +51,8 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           style={{ maskImage: `url(/icons/${module.type}.svg)` }}
         />
         <h3 className="text-xs">{module.type}</h3>
-        <button className="ml-auto flex items-center cursor-pointer">
-          <span className="mr-2 inline-block w-[14px] h-[14px] bg-text-gray [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+        <button className="ml-auto p-2 flex items-center cursor-pointer hover:bg-border-subtle rounded">
+          <span className="inline-block w-[14px] h-[14px] bg-text-gray [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
         </button>
       </div>
       {module.type === 'browser' && (

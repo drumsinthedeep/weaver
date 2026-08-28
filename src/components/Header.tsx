@@ -1,30 +1,13 @@
 import { useWorkspaceStore } from '../store/workspaceGridStore';
-const GRID_COLUMNS = 12;
 
 export default function Header() {
-  const modules = useWorkspaceStore((state) => state.modules);
-  const addModule = useWorkspaceStore((state) => state.addModule);
-  const handleAddModule = () => {
-    const w = 4;
-    const h = 4;
-    const x = (modules.length * w) % GRID_COLUMNS;
-    const y = modules.reduce((bottomEdge, module) => Math.max(bottomEdge, module.y + module.h), 0);
-
-    addModule({
-      id: crypto.randomUUID(),
-      type: 'tasks',
-      x,
-      y,
-      w,
-      h,
-    });
-  };
+  const openAddModuleModal = useWorkspaceStore((state) => state.openAddModuleModal);
 
   return (
     <div className="flex items-center sticky top-0 z-10 justify-between bg-white border-b border-border-subtle px-4 py-4 mr-[-14px]">
       <h1 className="text-lg font-semibold text-text-gray">Breadcrumbs</h1>
       <button
-        onClick={handleAddModule}
+        onClick={openAddModuleModal}
         className="flex items-center cursor-pointer gap-2 rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:bg-primary-purple/90"
       >
         <img src="/icons/add.svg" alt="" className="w-4" />

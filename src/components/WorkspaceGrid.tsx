@@ -47,7 +47,7 @@ function WorkspaceGrid(): React.JSX.Element {
               handleComponent: (_axis, ref) => (
                 <div
                   ref={ref as React.RefObject<HTMLDivElement>}
-                  className="absolute bottom-0 right-0 h-4 w-4 resize-handle m-1"
+                  className="absolute bottom-0 right-0 h-4 w-4 resize-handle m-1 cursor-pointer"
                 >
                   <img src="/icons/resize.svg" alt="" className="w-full" />
                 </div>

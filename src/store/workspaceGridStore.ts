@@ -31,6 +31,9 @@ interface WorkspaceState {
   addTask: (moduleId: string, label: string) => void;
   toggleTask: (moduleId: string, taskId: string) => void;
   removeTask: (moduleId: string, taskId: string) => void;
+  isAddModuleModalOpen: boolean;
+  openAddModuleModal: () => void;
+  closeAddModuleModal: () => void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -75,7 +78,13 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             m.id === moduleId ? { ...m, tasks: (m.tasks ?? []).filter((t) => t.id !== taskId) } : m
           ),
         })),
+      isAddModuleModalOpen: false,
+      openAddModuleModal: () => set({ isAddModuleModalOpen: true }),
+      closeAddModuleModal: () => set({ isAddModuleModalOpen: false }),
     }),
-    { name: 'weaver-workspace' }
+    {
+      name: 'weaver-workspace',
+      partialize: (state) => ({ modules: state.modules }),
+    }
   )
 );
