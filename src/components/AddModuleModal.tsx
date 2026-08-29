@@ -31,7 +31,15 @@ export default function AddModuleModal() {
     const x = (modules.length * w) % GRID_COLUMNS;
     const y = modules.reduce((bottomEdge, module) => Math.max(bottomEdge, module.y + module.h), 0);
 
-    addModule({ id: crypto.randomUUID(), type, x, y, w, h });
+    const id = crypto.randomUUID();
+
+    if (type === 'browser') {
+      const tabId = crypto.randomUUID();
+      addModule({ id, type, x, y, w, h, tabs: [{ id: tabId, url: '' }], activeTabId: tabId });
+    } else {
+      addModule({ id, type, x, y, w, h });
+    }
+
     closeAddModuleModal();
   };
 

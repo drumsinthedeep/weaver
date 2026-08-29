@@ -9,6 +9,13 @@ export interface Task {
   done: boolean;
 }
 
+export interface BrowserTab {
+  id: string;
+  url: string;
+  title?: string;
+  favicon?: string;
+}
+
 export interface WorkspaceModule {
   id: string;
   type: ModuleType;
@@ -17,8 +24,9 @@ export interface WorkspaceModule {
   w: number;
   h: number;
   content?: string;
-  url?: string;
   tasks?: Task[];
+  tabs?: BrowserTab[];
+  activeTabId?: string;
 }
 
 interface WorkspaceState {
@@ -27,10 +35,14 @@ interface WorkspaceState {
   removeModule: (id: string) => void;
   setModules: (modules: WorkspaceModule[]) => void;
   updateModuleContent: (id: string, content: string) => void;
-  updateModuleUrl: (id: string, url: string) => void;
   addTask: (moduleId: string, label: string) => void;
   toggleTask: (moduleId: string, taskId: string) => void;
   removeTask: (moduleId: string, taskId: string) => void;
+  addBrowserTab: (moduleId: string, url: string) => void;
+  closeBrowserTab: (moduleId: string, tabId: string) => void;
+  setActiveBrowserTab: (moduleId: string, tabId: string) => void;
+  navigateBrowserTab: (moduleId: string, tabId: string, url: string) => void;
+  updateBrowserTabMeta: (moduleId: string, tabId: string, meta: { title?: string; favicon?: string }) => void;
   isAddModuleModalOpen: boolean;
   openAddModuleModal: () => void;
   closeAddModuleModal: () => void;
@@ -48,10 +60,6 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       updateModuleContent: (id, content) =>
         set((state) => ({
           modules: state.modules.map((m) => (m.id === id ? { ...m, content } : m)),
-        })),
-      updateModuleUrl: (id, url) =>
-        set((state) => ({
-          modules: state.modules.map((m) => (m.id === id ? { ...m, url } : m)),
         })),
       addTask: (moduleId, label) =>
         set((state) => ({
@@ -76,6 +84,43 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         set((state) => ({
           modules: state.modules.map((m) =>
             m.id === moduleId ? { ...m, tasks: (m.tasks ?? []).filter((t) => t.id !== taskId) } : m
+          ),
+        })),
+      addBrowserTab: (moduleId, url) =>
+        set((state) => ({
+          modules: state.modules.map((m) => {
+            if (m.id !== moduleId) return m;
+            const newTab: BrowserTab = { id: crypto.randomUUID(), url };
+            return { ...m, tabs: [...(m.tabs ?? []), newTab], activeTabId: newTab.id };
+          }),
+        })),
+      closeBrowserTab: (moduleId, tabId) =>
+        set((state) => ({
+          modules: state.modules.map((m) => {
+            if (m.id !== moduleId) return m;
+            const tabs = (m.tabs ?? []).filter((t) => t.id !== tabId);
+            const activeTabId = m.activeTabId === tabId ? tabs[tabs.length - 1]?.id : m.activeTabId;
+            return { ...m, tabs, activeTabId };
+          }),
+        })),
+      setActiveBrowserTab: (moduleId, tabId) =>
+        set((state) => ({
+          modules: state.modules.map((m) => (m.id === moduleId ? { ...m, activeTabId: tabId } : m)),
+        })),
+      navigateBrowserTab: (moduleId, tabId, url) =>
+        set((state) => ({
+          modules: state.modules.map((m) =>
+            m.id === moduleId
+              ? { ...m, tabs: (m.tabs ?? []).map((t) => (t.id === tabId ? { ...t, url } : t)) }
+              : m
+          ),
+        })),
+      updateBrowserTabMeta: (moduleId, tabId, meta) =>
+        set((state) => ({
+          modules: state.modules.map((m) =>
+            m.id === moduleId
+              ? { ...m, tabs: (m.tabs ?? []).map((t) => (t.id === tabId ? { ...t, ...meta } : t)) }
+              : m
           ),
         })),
       isAddModuleModalOpen: false,

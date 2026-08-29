@@ -2,7 +2,10 @@
 
 namespace JSX {
   interface IntrinsicElements {
-    webview: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+    webview: React.DetailedHTMLProps<
+      React.HTMLAttributes<import('electron').WebviewTag>,
+      import('electron').WebviewTag
+    > & {
       src?: string;
     };
   }

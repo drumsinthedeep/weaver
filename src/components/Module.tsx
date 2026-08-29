@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { useWorkspaceStore, WorkspaceModule } from '../store/workspaceGridStore';
+import BrowserModule from './BrowserModule';
 
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
   module: WorkspaceModule;
@@ -11,18 +12,9 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
 ) {
   const removeModule = useWorkspaceStore((state) => state.removeModule);
   const updateModuleContent = useWorkspaceStore((state) => state.updateModuleContent);
-  const updateModuleUrl = useWorkspaceStore((state) => state.updateModuleUrl);
   const addTask = useWorkspaceStore((state) => state.addTask);
   const toggleTask = useWorkspaceStore((state) => state.toggleTask);
   const removeTask = useWorkspaceStore((state) => state.removeTask);
-
-  const handleUrlSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-    const value = e.currentTarget.value.trim();
-    if (!value) return;
-    const url = /^https?:\/\//.test(value) ? value : `https://${value}`;
-    updateModuleUrl(module.id, url);
-  };
 
   const handleAddTask = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
@@ -55,22 +47,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           <span className="inline-block w-[14px] h-[14px] bg-text-gray [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
         </button>
       </div>
-      {module.type === 'browser' && (
-        <div className="flex flex-1 flex-col">
-          <input
-            type="text"
-            defaultValue={module.url ?? ''}
-            onKeyDown={handleUrlSubmit}
-            placeholder="Enter a URL and press Enter"
-            className="border-b border-border-subtle p-1 text-sm outline-none"
-          />
-          {module.url ? (
-            <webview src={module.url} className="flex-1" />
-          ) : (
-            <p className="flex-1 p-2 text-sm text-text-gray">Enter a URL above to browse</p>
-          )}
-        </div>
-      )}
+      {module.type === 'browser' && <BrowserModule module={module} />}
       {module.type === 'notes' && (
         <textarea
           value={module.content ?? ''}
