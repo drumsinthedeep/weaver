@@ -136,9 +136,18 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Inter Variable';
+  src: url('./assets/fonts/Inter-VariableFont.ttf') format('truetype-variations'),
+       url('./assets/fonts/Inter-VariableFont.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-raleway: "Raleway", sans-serif;
-  --font-poppins: "Poppins", sans-serif;
+  --font-inter: "Inter Variable", sans-serif;
   --font-roboto: "Roboto", sans-serif;
   --color-primary-gray: #F7F7FA;
   --color-secondary-gray: #FAFAFA;
