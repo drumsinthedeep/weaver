@@ -46,6 +46,9 @@ interface WorkspaceState {
   isAddModuleModalOpen: boolean;
   openAddModuleModal: () => void;
   closeAddModuleModal: () => void;
+  settingsModuleId: string | null;
+  openModuleSettings: (moduleId: string) => void;
+  closeModuleSettings: () => void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -126,6 +129,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       isAddModuleModalOpen: false,
       openAddModuleModal: () => set({ isAddModuleModalOpen: true }),
       closeAddModuleModal: () => set({ isAddModuleModalOpen: false }),
+      settingsModuleId: null,
+      openModuleSettings: (moduleId) => set({ settingsModuleId: moduleId }),
+      closeModuleSettings: () => set({ settingsModuleId: null }),
     }),
     {
       name: 'weaver-workspace',

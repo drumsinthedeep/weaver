@@ -10,7 +10,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   { module, style, className, onMouseDown, onMouseUp, onTouchEnd, children, ...rest },
   ref
 ) {
-  const removeModule = useWorkspaceStore((state) => state.removeModule);
+  const openModuleSettings = useWorkspaceStore((state) => state.openModuleSettings);
   const updateModuleContent = useWorkspaceStore((state) => state.updateModuleContent);
   const addTask = useWorkspaceStore((state) => state.addTask);
   const toggleTask = useWorkspaceStore((state) => state.toggleTask);
@@ -43,7 +43,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           style={{ maskImage: `url(/icons/${module.type}.svg)` }}
         />
         <h3 className="text-xs">{module.type}</h3>
-        <button className="ml-auto p-2 flex items-center cursor-pointer hover:bg-hover-gray rounded">
+        <button className="ml-auto p-2 flex items-center cursor-pointer hover:bg-hover-gray rounded" onClick={() => openModuleSettings(module.id)}>
           <span className="inline-block w-[14px] h-[14px] bg-text-gray [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
         </button>
       </div>
@@ -53,7 +53,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           value={module.content ?? ''}
           onChange={(e) => updateModuleContent(module.id, e.target.value)}
           placeholder="Write a note..."
-          className="w-full flex-1 resize-none border-none p-0 outline-none"
+          className="w-full flex-1 resize-none border-none p-2 outline-none"
         />
       )}
       {module.type === 'tasks' && (
@@ -62,7 +62,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
             type="text"
             onKeyDown={handleAddTask}
             placeholder="Add a task and press Enter"
-            className="border-b border-border-subtle p-1 text-sm outline-none"
+            className="border-b border-border-subtle py-1 text-sm outline-none placeholder:text-text-gray"
           />
           <ul className="mt-2 flex flex-col gap-1">
             {(module.tasks ?? []).map((task) => (
@@ -75,7 +75,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                 <span className={`flex-1 ${task.done ? 'text-text-gray line-through' : ''}`}>
                   {task.label}
                 </span>
-                <button type="button" onClick={() => removeTask(module.id, task.id)}>
+                <button className="cursor-pointer" type="button" onClick={() => removeTask(module.id, task.id)}>
                   ×
                 </button>
               </li>
@@ -83,9 +83,6 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           </ul>
         </div>
       )}
-      <button type="button" onClick={() => removeModule(module.id)}>
-        remove module
-      </button>
       {children}
     </div>
   );

@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import WorkspaceGrid from './components/WorkspaceGrid';
 import AddModuleModal from './components/AddModuleModal';
+import ModuleSettingsModal from './components/ModuleSettingsModal';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Header />
         <WorkspaceGrid />
         <AddModuleModal />
+        <ModuleSettingsModal />
       </div>
     </div>
   );
