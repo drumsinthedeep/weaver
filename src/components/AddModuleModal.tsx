@@ -5,6 +5,7 @@ const GRID_COLUMNS = 12;
 interface ModuleTypeOption {
   name: string;
   icon: string;
+  iconWidth: string;
   description: string;
   type: ModuleType | null;
 }
@@ -15,13 +16,13 @@ export default function AddModuleModal() {
   const modules = useWorkspaceStore((state) => state.modules);
   const addModule = useWorkspaceStore((state) => state.addModule);
 
-  const taskType: ModuleTypeOption = { name: 'Task', icon: '/icons/tasks.svg', description: 'Checklist with progress tracking and due dates.', type: 'tasks' };
-  const noteType: ModuleTypeOption = { name: 'Note', icon: '/icons/notes.svg', description: 'Freeform notes, research logs, and markdown.', type: 'notes' };
-  const browserType: ModuleTypeOption = { name: 'Browser', icon: '/icons/browser.svg', description: 'Browse websites natively inside your workspace.', type: 'browser' };
-  const bookmarkType: ModuleTypeOption = { name: 'Bookmark', icon: '/icons/bookmark.svg', description: 'Save and organize important links.', type: null };
-  const fileType: ModuleTypeOption = { name: 'File', icon: '/icons/file.svg', description: 'Attach and organize documents and media.', type: null };
-  const calendarType: ModuleTypeOption = { name: 'Calendar', icon: '/icons/calendar.svg', description: 'Events, reminders, and scheduling.', type: null };
-  const customType: ModuleTypeOption = { name: 'Custom', icon: '/icons/custom.svg', description: 'Custom modules for specific use cases.', type: null };
+  const taskType: ModuleTypeOption = { name: 'Task', icon: '/icons/tasks.svg', iconWidth: 'w-8', description: 'Checklist with progress tracking and due dates.', type: 'tasks' };
+  const noteType: ModuleTypeOption = { name: 'Note', icon: '/icons/notes.svg', iconWidth: 'w-7', description: 'Freeform notes, research logs, and markdown.', type: 'notes' };
+  const browserType: ModuleTypeOption = { name: 'Browser', icon: '/icons/browser.svg', iconWidth: 'w-9', description: 'Browse websites natively inside your workspace.', type: 'browser' };
+  const bookmarkType: ModuleTypeOption = { name: 'Bookmark', icon: '/icons/bookmark.svg', iconWidth: 'w-8', description: 'Save and organize important links.', type: 'bookmark' };
+  const fileType: ModuleTypeOption = { name: 'File', icon: '/icons/folder.svg', iconWidth: 'w-9', description: 'Attach and organize documents and media.', type: 'file' };
+  const calendarType: ModuleTypeOption = { name: 'Calendar', icon: '/icons/calendar.svg', iconWidth: 'w-8', description: 'Events, reminders, and scheduling.', type: 'calendar' };
+  const customType: ModuleTypeOption = { name: 'Custom', icon: '/icons/settings.svg', iconWidth: 'w-8', description: 'Custom modules for specific use cases.', type: 'custom' };
 
   const handleSelectType = (type: ModuleType | null) => {
     if (!type) return;
@@ -73,7 +74,7 @@ export default function AddModuleModal() {
                   : 'cursor-not-allowed opacity-50'
               }`}
             >
-              <img src={moduleOption.icon} alt={moduleOption.name} className="w-8 h-8" />
+              <img src={moduleOption.icon} alt={moduleOption.name} className={`h-[40px] ${moduleOption.iconWidth}`} />
               <h2 className="font-semibold">{moduleOption.name}</h2>
               <p className="text-sm text-text-gray text-center">{moduleOption.description}</p>
             </div>
