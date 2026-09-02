@@ -27,6 +27,9 @@ export interface WorkspaceModule {
   tasks?: Task[];
   tabs?: BrowserTab[];
   activeTabId?: string;
+  name?: string;
+  locked?: boolean;
+  color?: string;
 }
 
 interface WorkspaceState {
@@ -49,6 +52,10 @@ interface WorkspaceState {
   settingsModuleId: string | null;
   openModuleSettings: (moduleId: string) => void;
   closeModuleSettings: () => void;
+  renameModule: (id: string, name: string) => void;
+  toggleModuleLock: (id: string) => void;
+  duplicateModule: (id: string) => void;
+  updateModuleColor: (id: string, color: string | undefined) => void;
 }
 
 export const useWorkspaceStore = create<WorkspaceState>()(
@@ -132,6 +139,36 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       settingsModuleId: null,
       openModuleSettings: (moduleId) => set({ settingsModuleId: moduleId }),
       closeModuleSettings: () => set({ settingsModuleId: null }),
+      renameModule: (id, name) =>
+        set((state) => ({
+          modules: state.modules.map((m) => (m.id === id ? { ...m, name } : m)),
+        })),
+      toggleModuleLock: (id) =>
+        set((state) => ({
+          modules: state.modules.map((m) => (m.id === id ? { ...m, locked: !m.locked } : m)),
+        })),
+      duplicateModule: (id) =>
+        set((state) => {
+          const original = state.modules.find((m) => m.id === id);
+          if (!original) return state;
+
+          const tabs = original.tabs?.map((t) => ({ ...t, id: crypto.randomUUID() }));
+          const activeTabId = tabs?.find((_, i) => original.tabs?.[i]?.id === original.activeTabId)?.id;
+
+          const copy: WorkspaceModule = {
+            ...original,
+            id: crypto.randomUUID(),
+            tasks: original.tasks?.map((t) => ({ ...t })),
+            tabs,
+            activeTabId,
+          };
+
+          return { modules: [...state.modules, copy] };
+        }),
+      updateModuleColor: (id, color) =>
+        set((state) => ({
+          modules: state.modules.map((m) => (m.id === id ? { ...m, color } : m)),
+        })),
     }),
     {
       name: 'weaver-workspace',

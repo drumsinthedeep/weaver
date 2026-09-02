@@ -33,6 +33,7 @@ function WorkspaceGrid(): React.JSX.Element {
     y: module.y,
     w: module.w,
     h: module.h,
+    static: module.locked,
   }));
 
   return (

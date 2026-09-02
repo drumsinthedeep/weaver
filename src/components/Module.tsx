@@ -24,10 +24,15 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     e.currentTarget.value = '';
   };
 
+  const cardStyle: React.CSSProperties = {
+    ...style,
+    ...(module.color && { borderTopColor: module.color, borderTopWidth: '4px' }),
+  };
+
   return (
     <div
       ref={ref}
-      style={style}
+      style={cardStyle}
       className={`flex flex-col border border-border-subtle shadow-subtle bg-white rounded-[12px] ${className ?? ''}`}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
@@ -42,7 +47,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           className={`mx-1 bg-text-gray ${module.type === 'notes' ? 'w-3 h-3' : module.type === 'tasks' ? 'w-[14px] h-[14px]' : 'w-4 h-4'} [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]`}
           style={{ maskImage: `url(/icons/${module.type}.svg)` }}
         />
-        <h3 className="text-xs">{module.type}</h3>
+        <h3 className="text-xs">{module.name || module.type}</h3>
         <button className="ml-auto p-2 flex items-center cursor-pointer hover:bg-hover-gray rounded" onClick={() => openModuleSettings(module.id)}>
           <span className="inline-block w-[14px] h-[14px] bg-text-gray [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
         </button>

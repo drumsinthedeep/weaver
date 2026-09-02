@@ -1,9 +1,15 @@
 import { useWorkspaceStore } from '../store/workspaceGridStore';
 
+const MODULE_COLORS = ['#6366F1', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#6B7280'];
+
 export default function ModuleSettingsModal() {
   const settingsModuleId = useWorkspaceStore((state) => state.settingsModuleId);
   const closeModuleSettings = useWorkspaceStore((state) => state.closeModuleSettings);
   const removeModule = useWorkspaceStore((state) => state.removeModule);
+  const renameModule = useWorkspaceStore((state) => state.renameModule);
+  const toggleModuleLock = useWorkspaceStore((state) => state.toggleModuleLock);
+  const duplicateModule = useWorkspaceStore((state) => state.duplicateModule);
+  const updateModuleColor = useWorkspaceStore((state) => state.updateModuleColor);
   const modules = useWorkspaceStore((state) => state.modules);
 
   const module = modules.find((m) => m.id === settingsModuleId);
@@ -31,12 +37,60 @@ export default function ModuleSettingsModal() {
             <img src="/icons/close.svg" alt="Close" className="w-4 h-4" />
           </button>
         </div>
-        <div className="p-4 text-sm text-text-gray">Settings for this module will go here.</div>
+        <div className="flex flex-col gap-4 p-4">
+          <div>
+            <label className="mb-1 block text-[14px] font-medium text-text-gray">Name</label>
+            <input
+              key={module?.id}
+              type="text"
+              defaultValue={module?.name ?? ''}
+              onBlur={(e) => module && renameModule(module.id, e.target.value)}
+              placeholder={module?.type.toUpperCase()}
+              className="w-full rounded border border-gray-200 px-2 py-1 text-sm outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-[14px] font-medium text-text-gray">Color</label>
+            <div className="flex gap-2">
+              {MODULE_COLORS.map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  onClick={() =>
+                    module && updateModuleColor(module.id, module.color === color ? undefined : color)
+                  }
+                  style={{ backgroundColor: color }}
+                  className={`h-6 w-6 cursor-pointer rounded-full ${
+                    module?.color === color ? 'ring-2 ring-offset-2 ring-light-black' : ''
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={module?.locked ?? false}
+              onChange={() => module && toggleModuleLock(module.id)}
+            />
+            Lock position & size
+          </label>
+
+          <button
+            type="button"
+            onClick={() => module && duplicateModule(module.id)}
+            className="cursor-pointer self-start rounded-md border border-gray-200 px-[14px] py-[9px] text-sm font-medium hover:bg-hover-gray"
+          >
+            Duplicate Module
+          </button>
+        </div>
         <div className="flex justify-end border-t border-border-subtle p-4">
           <button
             type="button"
             onClick={() => module && removeModule(module.id)}
-            className="flex items-center gap-2 rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:bg-primary-purple/90 cursor-pointer"
+            className="flex items-center gap-2 rounded-md bg-danger px-[14px] py-[9px] text-sm font-medium text-white hover:bg-danger/80 cursor-pointer"
           >
             Remove Module
           </button>
