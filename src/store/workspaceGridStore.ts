@@ -41,7 +41,7 @@ export interface Workspace {
 interface WorkspaceState {
   workspaces: Workspace[];
   activeWorkspaceId: string;
-  addWorkspace: (name: string) => void;
+  addWorkspace: () => void;
   removeWorkspace: (id: string) => void;
   renameWorkspace: (id: string, name: string) => void;
   setActiveWorkspace: (id: string) => void;
@@ -86,9 +86,10 @@ export const useWorkspaceStore = create<WorkspaceState>()(
     (set) => ({
       workspaces: [{ id: defaultWorkspaceId, name: 'My Workspace', modules: [] }],
       activeWorkspaceId: defaultWorkspaceId,
-      addWorkspace: (name) =>
+      addWorkspace: () =>
         set((state) => {
           const id = crypto.randomUUID();
+          const name = `Workspace ${state.workspaces.length + 1}`;
           return {
             workspaces: [...state.workspaces, { id, name, modules: [] }],
             activeWorkspaceId: id,

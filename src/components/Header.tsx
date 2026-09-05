@@ -7,17 +7,20 @@ export default function Header() {
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const setActiveWorkspace = useWorkspaceStore((state) => state.setActiveWorkspace);
   const addWorkspace = useWorkspaceStore((state) => state.addWorkspace);
+  const renameWorkspace = useWorkspaceStore((state) => state.renameWorkspace);
 
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
+  const [renamingWorkspaceId, setRenamingWorkspaceId] = useState<string | null>(null);
   const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
 
-  const handleAddWorkspace = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== 'Enter') return;
-    const value = e.currentTarget.value.trim();
-    if (!value) return;
-    addWorkspace(value);
-    e.currentTarget.value = '';
-    setIsSwitcherOpen(false);
+  const handleAddWorkspace = () => {
+    addWorkspace();
+    setRenamingWorkspaceId(useWorkspaceStore.getState().activeWorkspaceId);
+  };
+
+  const commitRename = (id: string, value: string, fallback: string) => {
+    renameWorkspace(id, value.trim() || fallback);
+    setRenamingWorkspaceId(null);
   };
 
   return (
@@ -26,7 +29,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setIsSwitcherOpen((open) => !open)}
-          className="flex items-center gap-1 cursor-pointer text-lg font-semibold text-text-gray hover:text-light-black"
+          className={`${isSwitcherOpen ? 'text-light-black' : 'text-text-gray'} flex items-center gap-1 cursor-pointer text-lg font-semibold hover:text-light-black`}
         >
           {activeWorkspace?.name ?? 'Workspace'}
           <span className="text-xs">▾</span>
@@ -34,31 +37,51 @@ export default function Header() {
         {isSwitcherOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsSwitcherOpen(false)} />
-            <div className="absolute left-0 top-full z-20 mt-2 rounded-md border border-border-subtle bg-white shadow-md">
+            <div className="absolute left-0 top-full z-20 mt-2 w-56 rounded-md border border-border-subtle bg-white shadow-md">
+              <span className="block px-3 py-2 text-sm font-semibold text-text-gray">Workspaces</span>
               <ul className="max-h-60 overflow-auto py-1">
                 {workspaces.map((workspace) => (
                   <li key={workspace.id}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveWorkspace(workspace.id);
-                        setIsSwitcherOpen(false);
-                      }}
-                      className={`flex w-full items-center px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray ${
-                        workspace.id === activeWorkspaceId ? 'font-semibold text-primary-purple' : ''
-                      }`}
-                    >
-                      {workspace.name}
-                    </button>
+                    {renamingWorkspaceId === workspace.id ? (
+                      <input
+                        type="text"
+                        autoFocus
+                        defaultValue={workspace.name}
+                        onFocus={(e) => e.target.select()}
+                        onBlur={(e) => commitRename(workspace.id, e.target.value, workspace.name)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') e.currentTarget.blur();
+                          if (e.key === 'Escape') setRenamingWorkspaceId(null);
+                        }}
+                        className="w-full rounded border border-primary-purple px-3 py-2 text-sm outline-none"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveWorkspace(workspace.id);
+                          setIsSwitcherOpen(false);
+                        }}
+                        className={`flex w-full items-center px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray ${
+                          workspace.id === activeWorkspaceId ? 'font-semibold text-primary-purple' : ''
+                        }`}
+                      >
+                        {workspace.name}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
-              <input
-                type="text"
-                onKeyDown={handleAddWorkspace}
-                placeholder="New workspace name"
-                className="w-full border-t border-border-subtle px-3 py-2 text-sm outline-none placeholder:text-text-gray"
-              />
+              <button
+                type="button"
+                onClick={handleAddWorkspace}
+                className="flex w-full items-center gap-2 border-t border-border-subtle px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray"
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border-subtle bg-primary-purple/10">
+                  <span className="h-4 w-4 bg-primary-purple [mask-image:url('/icons/add.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+                </span>
+                <span className="text-primary-purple">New Workspace</span>
+              </button>
             </div>
           </>
         )}
