@@ -1,4 +1,4 @@
-import { useWorkspaceStore, ModuleType } from '../store/workspaceGridStore';
+import { useWorkspaceStore, useActiveWorkspaceModules, ModuleType } from '../store/workspaceGridStore';
 
 const GRID_COLUMNS = 12;
 
@@ -13,7 +13,7 @@ interface ModuleTypeOption {
 export default function AddModuleModal() {
   const isAddModuleModalOpen = useWorkspaceStore((state) => state.isAddModuleModalOpen);
   const closeAddModuleModal = useWorkspaceStore((state) => state.closeAddModuleModal);
-  const modules = useWorkspaceStore((state) => state.modules);
+  const modules = useActiveWorkspaceModules();
   const addModule = useWorkspaceStore((state) => state.addModule);
 
   const taskType: ModuleTypeOption = { name: 'Task', icon: '/icons/tasks.svg', iconWidth: 'w-8', description: 'Checklist with progress tracking and due dates.', type: 'tasks' };

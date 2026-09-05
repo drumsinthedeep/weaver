@@ -1,9 +1,9 @@
 import ReactGridLayout, { useContainerWidth, Layout } from 'react-grid-layout';
-import { useWorkspaceStore } from '../store/workspaceGridStore';
+import { useWorkspaceStore, useActiveWorkspaceModules } from '../store/workspaceGridStore';
 import Module from './Module';
 
 function WorkspaceGrid(): React.JSX.Element {
-  const modules = useWorkspaceStore((state) => state.modules);
+  const modules = useActiveWorkspaceModules();
   const setModules = useWorkspaceStore((state) => state.setModules);
   const { width, containerRef, mounted } = useContainerWidth();
 

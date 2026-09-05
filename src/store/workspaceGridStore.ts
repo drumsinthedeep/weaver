@@ -32,8 +32,20 @@ export interface WorkspaceModule {
   color?: string;
 }
 
-interface WorkspaceState {
+export interface Workspace {
+  id: string;
+  name: string;
   modules: WorkspaceModule[];
+}
+
+interface WorkspaceState {
+  workspaces: Workspace[];
+  activeWorkspaceId: string;
+  addWorkspace: (name: string) => void;
+  removeWorkspace: (id: string) => void;
+  renameWorkspace: (id: string, name: string) => void;
+  setActiveWorkspace: (id: string) => void;
+
   addModule: (module: WorkspaceModule) => void;
   removeModule: (id: string) => void;
   setModules: (modules: WorkspaceModule[]) => void;
@@ -58,79 +70,140 @@ interface WorkspaceState {
   updateModuleColor: (id: string, color: string | undefined) => void;
 }
 
+function updateActiveWorkspaceModules(
+  state: WorkspaceState,
+  updater: (modules: WorkspaceModule[]) => WorkspaceModule[]
+): Workspace[] {
+  return state.workspaces.map((w) =>
+    w.id === state.activeWorkspaceId ? { ...w, modules: updater(w.modules) } : w
+  );
+}
+
+const defaultWorkspaceId = crypto.randomUUID();
+
 export const useWorkspaceStore = create<WorkspaceState>()(
   persist(
     (set) => ({
-      modules: [],
+      workspaces: [{ id: defaultWorkspaceId, name: 'My Workspace', modules: [] }],
+      activeWorkspaceId: defaultWorkspaceId,
+      addWorkspace: (name) =>
+        set((state) => {
+          const id = crypto.randomUUID();
+          return {
+            workspaces: [...state.workspaces, { id, name, modules: [] }],
+            activeWorkspaceId: id,
+          };
+        }),
+      removeWorkspace: (id) =>
+        set((state) => {
+          if (state.workspaces.length <= 1) return state;
+          const workspaces = state.workspaces.filter((w) => w.id !== id);
+          const activeWorkspaceId =
+            state.activeWorkspaceId === id ? workspaces[0].id : state.activeWorkspaceId;
+          return { workspaces, activeWorkspaceId };
+        }),
+      renameWorkspace: (id, name) =>
+        set((state) => ({
+          workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, name } : w)),
+        })),
+      setActiveWorkspace: (id) => set({ activeWorkspaceId: id }),
+
       addModule: (module) =>
-        set((state) => ({ modules: [...state.modules, module] })),
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) => [...modules, module]),
+        })),
       removeModule: (id) =>
-        set((state) => ({ modules: state.modules.filter((m) => m.id !== id) })),
-      setModules: (modules) => set({ modules }),
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.filter((m) => m.id !== id)
+          ),
+        })),
+      setModules: (modules) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, () => modules),
+        })),
       updateModuleContent: (id, content) =>
         set((state) => ({
-          modules: state.modules.map((m) => (m.id === id ? { ...m, content } : m)),
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => (m.id === id ? { ...m, content } : m))
+          ),
         })),
       addTask: (moduleId, label) =>
         set((state) => ({
-          modules: state.modules.map((m) =>
-            m.id === moduleId
-              ? { ...m, tasks: [...(m.tasks ?? []), { id: crypto.randomUUID(), label, done: false }] }
-              : m
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId
+                ? { ...m, tasks: [...(m.tasks ?? []), { id: crypto.randomUUID(), label, done: false }] }
+                : m
+            )
           ),
         })),
       toggleTask: (moduleId, taskId) =>
         set((state) => ({
-          modules: state.modules.map((m) =>
-            m.id === moduleId
-              ? {
-                  ...m,
-                  tasks: (m.tasks ?? []).map((t) => (t.id === taskId ? { ...t, done: !t.done } : t)),
-                }
-              : m
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId
+                ? {
+                    ...m,
+                    tasks: (m.tasks ?? []).map((t) => (t.id === taskId ? { ...t, done: !t.done } : t)),
+                  }
+                : m
+            )
           ),
         })),
       removeTask: (moduleId, taskId) =>
         set((state) => ({
-          modules: state.modules.map((m) =>
-            m.id === moduleId ? { ...m, tasks: (m.tasks ?? []).filter((t) => t.id !== taskId) } : m
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId ? { ...m, tasks: (m.tasks ?? []).filter((t) => t.id !== taskId) } : m
+            )
           ),
         })),
       addBrowserTab: (moduleId, url) =>
         set((state) => ({
-          modules: state.modules.map((m) => {
-            if (m.id !== moduleId) return m;
-            const newTab: BrowserTab = { id: crypto.randomUUID(), url };
-            return { ...m, tabs: [...(m.tabs ?? []), newTab], activeTabId: newTab.id };
-          }),
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => {
+              if (m.id !== moduleId) return m;
+              const newTab: BrowserTab = { id: crypto.randomUUID(), url };
+              return { ...m, tabs: [...(m.tabs ?? []), newTab], activeTabId: newTab.id };
+            })
+          ),
         })),
       closeBrowserTab: (moduleId, tabId) =>
         set((state) => ({
-          modules: state.modules.map((m) => {
-            if (m.id !== moduleId) return m;
-            const tabs = (m.tabs ?? []).filter((t) => t.id !== tabId);
-            const activeTabId = m.activeTabId === tabId ? tabs[tabs.length - 1]?.id : m.activeTabId;
-            return { ...m, tabs, activeTabId };
-          }),
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => {
+              if (m.id !== moduleId) return m;
+              const tabs = (m.tabs ?? []).filter((t) => t.id !== tabId);
+              const activeTabId = m.activeTabId === tabId ? tabs[tabs.length - 1]?.id : m.activeTabId;
+              return { ...m, tabs, activeTabId };
+            })
+          ),
         })),
       setActiveBrowserTab: (moduleId, tabId) =>
         set((state) => ({
-          modules: state.modules.map((m) => (m.id === moduleId ? { ...m, activeTabId: tabId } : m)),
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => (m.id === moduleId ? { ...m, activeTabId: tabId } : m))
+          ),
         })),
       navigateBrowserTab: (moduleId, tabId, url) =>
         set((state) => ({
-          modules: state.modules.map((m) =>
-            m.id === moduleId
-              ? { ...m, tabs: (m.tabs ?? []).map((t) => (t.id === tabId ? { ...t, url } : t)) }
-              : m
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId
+                ? { ...m, tabs: (m.tabs ?? []).map((t) => (t.id === tabId ? { ...t, url } : t)) }
+                : m
+            )
           ),
         })),
       updateBrowserTabMeta: (moduleId, tabId, meta) =>
         set((state) => ({
-          modules: state.modules.map((m) =>
-            m.id === moduleId
-              ? { ...m, tabs: (m.tabs ?? []).map((t) => (t.id === tabId ? { ...t, ...meta } : t)) }
-              : m
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId
+                ? { ...m, tabs: (m.tabs ?? []).map((t) => (t.id === tabId ? { ...t, ...meta } : t)) }
+                : m
+            )
           ),
         })),
       isAddModuleModalOpen: false,
@@ -141,38 +214,51 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       closeModuleSettings: () => set({ settingsModuleId: null }),
       renameModule: (id, name) =>
         set((state) => ({
-          modules: state.modules.map((m) => (m.id === id ? { ...m, name } : m)),
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => (m.id === id ? { ...m, name } : m))
+          ),
         })),
       toggleModuleLock: (id) =>
         set((state) => ({
-          modules: state.modules.map((m) => (m.id === id ? { ...m, locked: !m.locked } : m)),
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => (m.id === id ? { ...m, locked: !m.locked } : m))
+          ),
         })),
       duplicateModule: (id) =>
-        set((state) => {
-          const original = state.modules.find((m) => m.id === id);
-          if (!original) return state;
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) => {
+            const original = modules.find((m) => m.id === id);
+            if (!original) return modules;
 
-          const tabs = original.tabs?.map((t) => ({ ...t, id: crypto.randomUUID() }));
-          const activeTabId = tabs?.find((_, i) => original.tabs?.[i]?.id === original.activeTabId)?.id;
+            const tabs = original.tabs?.map((t) => ({ ...t, id: crypto.randomUUID() }));
+            const activeTabId = tabs?.find((_, i) => original.tabs?.[i]?.id === original.activeTabId)?.id;
 
-          const copy: WorkspaceModule = {
-            ...original,
-            id: crypto.randomUUID(),
-            tasks: original.tasks?.map((t) => ({ ...t })),
-            tabs,
-            activeTabId,
-          };
+            const copy: WorkspaceModule = {
+              ...original,
+              id: crypto.randomUUID(),
+              tasks: original.tasks?.map((t) => ({ ...t })),
+              tabs,
+              activeTabId,
+            };
 
-          return { modules: [...state.modules, copy] };
-        }),
+            return [...modules, copy];
+          }),
+        })),
       updateModuleColor: (id, color) =>
         set((state) => ({
-          modules: state.modules.map((m) => (m.id === id ? { ...m, color } : m)),
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => (m.id === id ? { ...m, color } : m))
+          ),
         })),
     }),
     {
       name: 'weaver-workspace',
-      partialize: (state) => ({ modules: state.modules }),
+      partialize: (state) => ({ workspaces: state.workspaces, activeWorkspaceId: state.activeWorkspaceId }),
     }
   )
 );
+
+export const useActiveWorkspaceModules = () =>
+  useWorkspaceStore(
+    (state) => state.workspaces.find((w) => w.id === state.activeWorkspaceId)?.modules ?? []
+  );

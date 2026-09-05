@@ -1,4 +1,4 @@
-import { useWorkspaceStore } from '../store/workspaceGridStore';
+import { useWorkspaceStore, useActiveWorkspaceModules } from '../store/workspaceGridStore';
 
 const MODULE_COLORS = ['#6366F1', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#6B7280'];
 
@@ -10,7 +10,7 @@ export default function ModuleSettingsModal() {
   const toggleModuleLock = useWorkspaceStore((state) => state.toggleModuleLock);
   const duplicateModule = useWorkspaceStore((state) => state.duplicateModule);
   const updateModuleColor = useWorkspaceStore((state) => state.updateModuleColor);
-  const modules = useWorkspaceStore((state) => state.modules);
+  const modules = useActiveWorkspaceModules();
 
   const module = modules.find((m) => m.id === settingsModuleId);
   const isOpen = Boolean(module);
@@ -69,7 +69,7 @@ export default function ModuleSettingsModal() {
             </div>
           </div>
 
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-sm mt-4">
             <input
               type="checkbox"
               checked={module?.locked ?? false}
