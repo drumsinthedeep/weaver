@@ -48,7 +48,7 @@ export default function AddModuleModal() {
     <>
       <div
         onClick={closeAddModuleModal}
-        className={`fixed inset-0 z-10 bg-light-black/60 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-10 bg-gray-500/30 backdrop-blur-[2px] transition-opacity duration-300 ${
           isAddModuleModalOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       />

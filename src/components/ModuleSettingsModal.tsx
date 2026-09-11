@@ -19,7 +19,7 @@ export default function ModuleSettingsModal() {
     <>
       <div
         onClick={closeModuleSettings}
-        className={`fixed inset-0 z-10 bg-light-black/60 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-10 bg-gray-500/30 backdrop-blur-[2px] transition-opacity duration-300 ${
           isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       />
@@ -46,7 +46,7 @@ export default function ModuleSettingsModal() {
               defaultValue={module?.name ?? ''}
               onBlur={(e) => module && renameModule(module.id, e.target.value)}
               placeholder={module?.type.toUpperCase()}
-              className="w-full rounded border border-gray-200 px-2 py-1 text-sm outline-none"
+              className="w-full rounded border border-gray-200 px-2 py-1 text-sm outline-none placeholder:tracking-wide placeholder:text-text-gray"
             />
           </div>
 

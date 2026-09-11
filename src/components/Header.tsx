@@ -38,7 +38,7 @@ export default function Header() {
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsSwitcherOpen(false)} />
             <div className="absolute left-0 top-full z-20 mt-2 w-56 rounded-md border border-border-subtle bg-white shadow-md">
-              <span className="block px-3 py-2 text-sm font-semibold text-text-gray">Workspaces</span>
+              <span className="block px-3 py-2 text-xs font-semibold text-text-gray">WORKSPACES</span>
               <ul className="max-h-60 overflow-auto py-1">
                 {workspaces.map((workspace) => (
                   <li key={workspace.id}>
@@ -86,13 +86,19 @@ export default function Header() {
           </>
         )}
       </div>
-      <button
-        onClick={openAddModuleModal}
-        className="flex items-center cursor-pointer gap-2 rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:bg-primary-purple/80"
-      >
-        <img src="/icons/add.svg" alt="" className="w-4" />
-        Add Module
-      </button>
+      <div className="flex items-center gap-2">
+        <button className="flex items-center cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium hover:bg-hover-gray border-border-subtle border" onClick={() => useWorkspaceStore.getState().openModuleSettings()}>
+          <img src="/icons/sliders.svg" alt="" className="w-4" />
+          Customize
+        </button>
+        <button
+          onClick={openAddModuleModal}
+          className="flex items-center cursor-pointer gap-2 rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:bg-primary-purple/80"
+        >
+          <img src="/icons/add.svg" alt="" className="w-4" />
+          Add Module
+        </button>
+      </div>
     </div>
   );
 }
