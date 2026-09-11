@@ -64,6 +64,9 @@ interface WorkspaceState {
   settingsModuleId: string | null;
   openModuleSettings: (moduleId: string) => void;
   closeModuleSettings: () => void;
+  isWorkspaceSettingsOpen: boolean;
+  openWorkspaceSettings: () => void;
+  closeWorkspaceSettings: () => void;
   renameModule: (id: string, name: string) => void;
   toggleModuleLock: (id: string) => void;
   duplicateModule: (id: string) => void;
@@ -213,6 +216,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       settingsModuleId: null,
       openModuleSettings: (moduleId) => set({ settingsModuleId: moduleId }),
       closeModuleSettings: () => set({ settingsModuleId: null }),
+      isWorkspaceSettingsOpen: false,
+      openWorkspaceSettings: () => set({ isWorkspaceSettingsOpen: true }),
+      closeWorkspaceSettings: () => set({ isWorkspaceSettingsOpen: false }),
       renameModule: (id, name) =>
         set((state) => ({
           workspaces: updateActiveWorkspaceModules(state, (modules) =>

@@ -7,6 +7,7 @@ export default function Header() {
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const setActiveWorkspace = useWorkspaceStore((state) => state.setActiveWorkspace);
   const addWorkspace = useWorkspaceStore((state) => state.addWorkspace);
+  const openWorkspaceSettings = useWorkspaceStore((state) => state.openWorkspaceSettings);
   const renameWorkspace = useWorkspaceStore((state) => state.renameWorkspace);
 
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
@@ -87,7 +88,7 @@ export default function Header() {
         )}
       </div>
       <div className="flex items-center gap-2">
-        <button className="flex items-center cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium hover:bg-hover-gray border-border-subtle border" onClick={() => useWorkspaceStore.getState().openModuleSettings()}>
+        <button className="flex items-center cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium hover:bg-hover-gray border-border-subtle border" onClick={openWorkspaceSettings}>
           <img src="/icons/sliders.svg" alt="" className="w-4" />
           Customize
         </button>
