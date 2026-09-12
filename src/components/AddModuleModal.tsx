@@ -53,7 +53,7 @@ export default function AddModuleModal() {
         }`}
       />
       <div
-        className={`fixed border-l-2 border-border-subtle top-0 right-0 z-20 h-full w-150 bg-white transition-transform duration-300 flex flex-col ${
+        className={`fixed border-l border-border-subtle top-0 right-0 z-20 h-full w-150 bg-white transition-transform duration-300 flex flex-col ${
           isAddModuleModalOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

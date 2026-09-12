@@ -32,11 +32,22 @@ export interface WorkspaceModule {
   color?: string;
 }
 
+export type BackgroundTint = 'default' | 'warm' | 'cool' | 'pure';
+export type ModuleStyle = 'rounded' | 'sharp' | 'pill';
+
 export interface Workspace {
   id: string;
   name: string;
+  description?: string;
+  accentColor?: string;
+  backgroundTint?: BackgroundTint;
+  moduleStyle?: ModuleStyle;
   modules: WorkspaceModule[];
 }
+
+type WorkspaceSettings = Partial<
+  Pick<Workspace, 'name' | 'description' | 'accentColor' | 'backgroundTint' | 'moduleStyle'>
+>;
 
 interface WorkspaceState {
   workspaces: Workspace[];
@@ -44,6 +55,7 @@ interface WorkspaceState {
   addWorkspace: () => void;
   removeWorkspace: (id: string) => void;
   renameWorkspace: (id: string, name: string) => void;
+  updateWorkspace: (id: string, updates: WorkspaceSettings) => void;
   setActiveWorkspace: (id: string) => void;
 
   addModule: (module: WorkspaceModule) => void;
@@ -109,6 +121,10 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       renameWorkspace: (id, name) =>
         set((state) => ({
           workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, name } : w)),
+        })),
+      updateWorkspace: (id, updates) =>
+        set((state) => ({
+          workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, ...updates } : w)),
         })),
       setActiveWorkspace: (id) => set({ activeWorkspaceId: id }),
 
