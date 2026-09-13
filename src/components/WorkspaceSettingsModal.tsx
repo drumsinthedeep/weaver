@@ -68,8 +68,13 @@ export default function WorkspaceSettingsModal() {
 
   const navButtonClass = (tab: 'general' | 'appearance') =>
     `flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm cursor-pointer ${
-      activeTab === tab ? 'bg-primary-purple/10 font-semibold text-primary-purple' : 'hover:bg-hover-gray'
+      activeTab === tab ? 'font-semibold' : 'hover:bg-hover-gray'
     }`;
+
+  const navButtonStyle = (tab: 'general' | 'appearance') =>
+    activeTab === tab
+      ? { backgroundColor: `${draft.accentColor}1a`, color: draft.accentColor }
+      : undefined;
 
   return (
     <>
@@ -86,10 +91,20 @@ export default function WorkspaceSettingsModal() {
       >
         <div className="flex w-44 shrink-0 flex-col gap-1 border-r border-border-subtle bg-secondary-gray p-3">
           <span className="mb-1 px-3 text-xs font-semibold uppercase text-text-gray">Workspace</span>
-          <button type="button" onClick={() => setActiveTab('general')} className={navButtonClass('general')}>
+          <button
+            type="button"
+            onClick={() => setActiveTab('general')}
+            style={navButtonStyle('general')}
+            className={navButtonClass('general')}
+          >
             General
           </button>
-          <button type="button" onClick={() => setActiveTab('appearance')} className={navButtonClass('appearance')}>
+          <button
+            type="button"
+            onClick={() => setActiveTab('appearance')}
+            style={navButtonStyle('appearance')}
+            className={navButtonClass('appearance')}
+          >
             Appearance
           </button>
           <p className="text-xs text-text-gray px-3 mt-auto">Changes apply to this workspace only.</p>
@@ -174,10 +189,9 @@ export default function WorkspaceSettingsModal() {
                         key={tint.value}
                         type="button"
                         onClick={() => setDraft({ ...draft, backgroundTint: tint.value })}
+                        style={draft.backgroundTint === tint.value ? { borderColor: draft.accentColor } : undefined}
                         className={`flex cursor-pointer flex-col items-center gap-2 rounded-lg border p-3 text-sm ${
-                          draft.backgroundTint === tint.value
-                            ? 'border-primary-purple'
-                            : 'border-gray-200 hover:bg-hover-gray'
+                          draft.backgroundTint === tint.value ? '' : 'border-gray-200 hover:bg-hover-gray'
                         }`}
                       >
                         <span className="h-5 w-5 rounded border border-border-subtle" style={{ backgroundColor: tint.swatch }} />
@@ -195,10 +209,13 @@ export default function WorkspaceSettingsModal() {
                         key={style.value}
                         type="button"
                         onClick={() => setDraft({ ...draft, moduleStyle: style.value })}
-                        className={`cursor-pointer rounded-lg border p-3 text-sm font-medium ${
+                        style={
                           draft.moduleStyle === style.value
-                            ? 'border-primary-purple text-primary-purple'
-                            : 'border-gray-200 hover:bg-hover-gray'
+                            ? { borderColor: draft.accentColor, color: draft.accentColor }
+                            : undefined
+                        }
+                        className={`cursor-pointer rounded-lg border p-3 text-sm font-medium ${
+                          draft.moduleStyle === style.value ? '' : 'border-gray-200 hover:bg-hover-gray'
                         }`}
                       >
                         {style.label}
@@ -222,7 +239,8 @@ export default function WorkspaceSettingsModal() {
               <button
                 type="button"
                 onClick={handleSave}
-                className="cursor-pointer rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:bg-primary-purple/80"
+                style={{ backgroundColor: draft.accentColor }}
+                className="cursor-pointer rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
               >
                 Save Changes
               </button>

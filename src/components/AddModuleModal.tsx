@@ -15,6 +15,9 @@ export default function AddModuleModal() {
   const closeAddModuleModal = useWorkspaceStore((state) => state.closeAddModuleModal);
   const modules = useActiveWorkspaceModules();
   const addModule = useWorkspaceStore((state) => state.addModule);
+  const workspaces = useWorkspaceStore((state) => state.workspaces);
+  const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
+  const accentColor = workspaces.find((w) => w.id === activeWorkspaceId)?.accentColor ?? '#6366F1';
 
   const taskType: ModuleTypeOption = { name: 'Task', icon: '/icons/tasks.svg', iconWidth: 'w-8', description: 'Checklist with progress tracking and due dates.', type: 'tasks' };
   const noteType: ModuleTypeOption = { name: 'Note', icon: '/icons/notes.svg', iconWidth: 'w-7', description: 'Freeform notes, research logs, and markdown.', type: 'notes' };
@@ -68,9 +71,10 @@ export default function AddModuleModal() {
             <div
               key={moduleOption.name}
               onClick={() => handleSelectType(moduleOption.type)}
+              style={{ '--accent': accentColor } as React.CSSProperties}
               className={`hover:bg-hover-gray flex flex-col items-center gap-2 p-8 border border-gray-200 rounded-lg shadow-subtle transition-all duration-200 ${
                 moduleOption.type
-                  ? 'cursor-pointer hover:border-primary-purple hover:shadow-md'
+                  ? 'cursor-pointer hover:border-[var(--accent)] hover:shadow-md'
                   : 'cursor-not-allowed opacity-50'
               }`}
             >

@@ -13,6 +13,7 @@ export default function Header() {
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [renamingWorkspaceId, setRenamingWorkspaceId] = useState<string | null>(null);
   const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
+  const accentColor = activeWorkspace?.accentColor ?? '#6366F1';
 
   const handleAddWorkspace = () => {
     addWorkspace();
@@ -54,7 +55,8 @@ export default function Header() {
                           if (e.key === 'Enter') e.currentTarget.blur();
                           if (e.key === 'Escape') setRenamingWorkspaceId(null);
                         }}
-                        className="w-full rounded border border-primary-purple px-3 py-2 text-sm outline-none"
+                        style={{ borderColor: accentColor }}
+                        className="w-full rounded border px-3 py-2 text-sm outline-none"
                       />
                     ) : (
                       <button
@@ -63,8 +65,9 @@ export default function Header() {
                           setActiveWorkspace(workspace.id);
                           setIsSwitcherOpen(false);
                         }}
+                        style={workspace.id === activeWorkspaceId ? { color: accentColor } : undefined}
                         className={`flex w-full items-center px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray ${
-                          workspace.id === activeWorkspaceId ? 'font-semibold text-primary-purple' : ''
+                          workspace.id === activeWorkspaceId ? 'font-semibold' : ''
                         }`}
                       >
                         {workspace.name}
@@ -78,10 +81,16 @@ export default function Header() {
                 onClick={handleAddWorkspace}
                 className="flex w-full items-center gap-2 border-t border-border-subtle px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray"
               >
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border-subtle bg-primary-purple/10">
-                  <span className="h-4 w-4 bg-primary-purple [mask-image:url('/icons/add.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+                <span
+                  style={{ backgroundColor: `${accentColor}1a` }}
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border-subtle"
+                >
+                  <span
+                    style={{ backgroundColor: accentColor }}
+                    className="h-4 w-4 [mask-image:url('/icons/add.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]"
+                  />
                 </span>
-                <span className="text-primary-purple">New Workspace</span>
+                <span style={{ color: accentColor }}>New Workspace</span>
               </button>
             </div>
           </>
@@ -94,7 +103,8 @@ export default function Header() {
         </button>
         <button
           onClick={openAddModuleModal}
-          className="flex items-center cursor-pointer gap-2 rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:bg-primary-purple/80"
+          style={{ backgroundColor: accentColor }}
+          className="flex items-center cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
         >
           <img src="/icons/add.svg" alt="" className="w-4" />
           Add Module
