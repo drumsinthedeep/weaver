@@ -71,10 +71,10 @@ export default function AddModuleModal() {
             <div
               key={moduleOption.name}
               onClick={() => handleSelectType(moduleOption.type)}
-              style={{ '--accent': accentColor } as React.CSSProperties}
-              className={`hover:bg-hover-gray flex flex-col items-center gap-2 p-8 border border-gray-200 rounded-lg shadow-subtle transition-all duration-200 ${
+              style={{ '--accent': accentColor, '--accent-tint': `${accentColor}1a` } as React.CSSProperties}
+              className={`flex flex-col items-center gap-2 p-8 border border-gray-200 rounded-lg shadow-subtle transition-all duration-200 ${
                 moduleOption.type
-                  ? 'cursor-pointer hover:border-[var(--accent)] hover:shadow-md'
+                  ? 'cursor-pointer hover:border-[var(--accent)] hover:bg-[var(--accent-tint)] hover:shadow-md'
                   : 'cursor-not-allowed opacity-50'
               }`}
             >
