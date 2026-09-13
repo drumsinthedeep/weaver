@@ -1,10 +1,13 @@
 import ReactGridLayout, { useContainerWidth, Layout } from 'react-grid-layout';
-import { useWorkspaceStore, useActiveWorkspaceModules } from '../store/workspaceGridStore';
+import { useWorkspaceStore, useActiveWorkspaceModules, BACKGROUND_TINT_COLORS } from '../store/workspaceGridStore';
 import Module from './Module';
 
 function WorkspaceGrid(): React.JSX.Element {
   const modules = useActiveWorkspaceModules();
   const setModules = useWorkspaceStore((state) => state.setModules);
+  const workspaces = useWorkspaceStore((state) => state.workspaces);
+  const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
+  const backgroundTint = workspaces.find((w) => w.id === activeWorkspaceId)?.backgroundTint ?? 'default';
   const { width, containerRef, mounted } = useContainerWidth();
 
   const handleLayoutChange = (layout: Layout) => {
@@ -38,7 +41,11 @@ function WorkspaceGrid(): React.JSX.Element {
 
   return (
     <div>
-      <div ref={containerRef as React.RefObject<HTMLDivElement>} className="bg-primary-gray mt-3">
+      <div
+        ref={containerRef as React.RefObject<HTMLDivElement>}
+        style={{ backgroundColor: BACKGROUND_TINT_COLORS[backgroundTint] }}
+        className="h-screen mr-[-14px]"
+      >
         {mounted && (
           <ReactGridLayout
             layout={layout}

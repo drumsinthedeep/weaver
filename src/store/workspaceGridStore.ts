@@ -35,6 +35,13 @@ export interface WorkspaceModule {
 export type BackgroundTint = 'default' | 'warm' | 'cool' | 'pure';
 export type ModuleStyle = 'rounded' | 'sharp' | 'pill';
 
+export const BACKGROUND_TINT_COLORS: Record<BackgroundTint, string> = {
+  default: '#F7F7FA',
+  warm: '#F5EBDD',
+  cool: '#E3ECF7',
+  pure: '#FFFFFF',
+};
+
 export interface Workspace {
   id: string;
   name: string;

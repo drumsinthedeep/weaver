@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useWorkspaceStore, Workspace, BackgroundTint, ModuleStyle } from '../store/workspaceGridStore';
+import {
+  useWorkspaceStore,
+  Workspace,
+  BackgroundTint,
+  ModuleStyle,
+  BACKGROUND_TINT_COLORS,
+} from '../store/workspaceGridStore';
 
 const ACCENT_COLORS = ['#6366F1', '#1a5edc', '#38BDF8', '#22C55E', '#EF4444', '#F59E0B', '#64748B', '#EC4899'];
 
-const BACKGROUND_TINTS: { value: BackgroundTint; label: string; swatch: string }[] = [
-  { value: 'default', label: 'Default', swatch: '#F7F7FA' },
-  { value: 'warm', label: 'Warm', swatch: '#F5EBDD' },
-  { value: 'cool', label: 'Cool', swatch: '#E3ECF7' },
-  { value: 'pure', label: 'Pure', swatch: '#FFFFFF' },
+const BACKGROUND_TINTS: { value: BackgroundTint; label: string }[] = [
+  { value: 'default', label: 'Default' },
+  { value: 'warm', label: 'Warm' },
+  { value: 'cool', label: 'Cool' },
+  { value: 'pure', label: 'Pure' },
 ];
 
 const MODULE_STYLES: { value: ModuleStyle; label: string }[] = [
@@ -194,7 +200,10 @@ export default function WorkspaceSettingsModal() {
                           draft.backgroundTint === tint.value ? '' : 'border-gray-200 hover:bg-hover-gray'
                         }`}
                       >
-                        <span className="h-5 w-5 rounded border border-border-subtle" style={{ backgroundColor: tint.swatch }} />
+                        <span
+                          className="h-5 w-5 rounded border border-border-subtle"
+                          style={{ backgroundColor: BACKGROUND_TINT_COLORS[tint.value] }}
+                        />
                         {tint.label}
                       </button>
                     ))}
