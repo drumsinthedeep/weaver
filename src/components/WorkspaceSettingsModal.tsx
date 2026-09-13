@@ -223,9 +223,9 @@ export default function WorkspaceSettingsModal() {
                             ? { borderColor: draft.accentColor, color: draft.accentColor }
                             : undefined
                         }
-                        className={`cursor-pointer rounded-lg border p-3 text-sm font-medium ${
-                          draft.moduleStyle === style.value ? '' : 'border-gray-200 hover:bg-hover-gray'
-                        }`}
+                        className={`cursor-pointer border p-3 text-sm font-medium ${
+                          style.value === 'sharp' ? '' : 'rounded-lg'
+                        } ${draft.moduleStyle === style.value ? '' : 'border-gray-200 hover:bg-hover-gray'}`}
                       >
                         {style.label}
                       </button>

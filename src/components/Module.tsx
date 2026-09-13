@@ -15,6 +15,9 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   const addTask = useWorkspaceStore((state) => state.addTask);
   const toggleTask = useWorkspaceStore((state) => state.toggleTask);
   const removeTask = useWorkspaceStore((state) => state.removeTask);
+  const workspaces = useWorkspaceStore((state) => state.workspaces);
+  const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
+  const isSharp = workspaces.find((w) => w.id === activeWorkspaceId)?.moduleStyle === 'sharp';
 
   const handleAddTask = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
@@ -33,13 +36,17 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     <div
       ref={ref}
       style={cardStyle}
-      className={`flex flex-col border border-border-subtle shadow-subtle bg-white rounded-[12px] ${className ?? ''}`}
+      className={`flex flex-col border border-border-subtle shadow-subtle bg-white ${isSharp ? '' : 'rounded-[12px]'} ${className ?? ''}`}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onTouchEnd={onTouchEnd}
       {...rest}
     >
-      <div className="card-header items-center bg-secondary-gray border-b border-border-subtle flex py-[10px] px-[8px] rounded-t-[12px] text-text-gray uppercase">
+      <div
+        className={`card-header items-center bg-secondary-gray border-b border-border-subtle flex py-[10px] px-[8px] ${
+          isSharp ? '' : 'rounded-t-[12px]'
+        } text-text-gray uppercase`}
+      >
         <div className="w-[21px] drag-target cursor-grab">
           <img src="/icons/drag.svg" alt="" draggable={false} />
         </div>
