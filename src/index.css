@@ -153,6 +153,7 @@
   --color-secondary-gray: #FAFAFA;
   --color-border-subtle: #0000001c;
   --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0px 2px 14px rgba(0, 0, 0, 0.08);
   --color-text-gray: #9898A8;
   --color-primary-purple: #6366F1;
   --color-hover-gray: #F0F0F8;

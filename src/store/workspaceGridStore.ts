@@ -62,6 +62,7 @@ type WorkspaceSettings = Partial<
 >;
 
 export type SettingsTab = 'account' | 'appearance' | 'notifications' | 'shortcuts';
+export type AppView = 'home' | 'workspace';
 
 interface WorkspaceState {
   profile: Profile;
@@ -70,6 +71,8 @@ interface WorkspaceState {
   settingsTab: SettingsTab;
   openSettings: (tab?: SettingsTab) => void;
   closeSettings: () => void;
+  activeView: AppView;
+  setActiveView: (view: AppView) => void;
   workspaces: Workspace[];
   activeWorkspaceId: string;
   addWorkspace: () => void;
@@ -124,6 +127,8 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       settingsTab: 'account',
       openSettings: (tab = 'account') => set({ isSettingsOpen: true, settingsTab: tab }),
       closeSettings: () => set({ isSettingsOpen: false }),
+      activeView: 'home',
+      setActiveView: (view) => set({ activeView: view }),
       workspaces: [{ id: defaultWorkspaceId, name: 'My Workspace', modules: [] }],
       activeWorkspaceId: defaultWorkspaceId,
       addWorkspace: () =>

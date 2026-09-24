@@ -4,6 +4,8 @@ import { useWorkspaceStore } from '../store/workspaceGridStore';
 export default function Sidebar() {
   const profile = useWorkspaceStore((state) => state.profile);
   const openSettings = useWorkspaceStore((state) => state.openSettings);
+  const activeView = useWorkspaceStore((state) => state.activeView);
+  const setActiveView = useWorkspaceStore((state) => state.setActiveView);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const handleNavigate = (tab: 'account' | 'appearance') => {
     openSettings(tab);
@@ -17,14 +19,34 @@ export default function Sidebar() {
         <h1 className="font-raleway text-lg font-semibold">WEAVER</h1>
       </div>
       <div className="flex flex-col">
-        <a className="group text-light-black p-2 flex items-center leading-none hover:bg-hover-gray hover:text-primary-purple rounded" href="#">
-          <span className="mr-2 mb-[1px] inline-block h-5 w-5 bg-text-gray group-hover:bg-primary-purple [mask-image:url('/icons/home.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+        <button
+          type="button"
+          onClick={() => setActiveView('home')}
+          className={`group text-light-black p-2 flex items-center leading-none rounded hover:text-primary-purple ${
+            activeView === 'home' ? 'bg-primary-purple/10 font-semibold text-primary-purple' : 'hover:bg-hover-gray'
+          }`}
+        >
+          <span
+            className={`mr-2 mb-[1px] inline-block h-5 w-5 [mask-image:url('/icons/home.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+              activeView === 'home' ? 'bg-primary-purple' : 'bg-text-gray group-hover:bg-primary-purple'
+            }`}
+          />
           Home
-        </a>
-        <a className="group text-light-black p-2 flex items-center leading-none hover:bg-hover-gray hover:text-primary-purple rounded" href="#">
-          <span className="mr-2 mb-[-1px] inline-block h-5 w-5 bg-text-gray group-hover:bg-primary-purple [mask-image:url('/icons/grid.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveView('workspace')}
+          className={`group text-light-black p-2 flex items-center leading-none rounded hover:text-primary-purple ${
+            activeView === 'workspace' ? 'bg-primary-purple/10 font-semibold text-primary-purple' : 'hover:bg-hover-gray'
+          }`}
+        >
+          <span
+            className={`mr-2 mb-[-1px] inline-block h-5 w-5 [mask-image:url('/icons/grid.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+              activeView === 'workspace' ? 'bg-primary-purple' : 'bg-text-gray group-hover:bg-primary-purple'
+            }`}
+          />
           Workspaces
-        </a>
+        </button>
         <a className="group text-light-black p-2 flex items-center leading-none hover:bg-hover-gray hover:text-primary-purple rounded" href="#">
           <span className="mr-2 mb-[1px] inline-block h-5 w-5 bg-text-gray group-hover:bg-primary-purple [mask-image:url('/icons/archive.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
           Archives
