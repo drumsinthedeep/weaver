@@ -138,7 +138,7 @@ export default function SettingsModal() {
                 type="button"
                 onClick={handleSave}
                 style={{ backgroundColor: accentColor }}
-                className="cursor-pointer rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
+                className={`cursor-pointer border-1 rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90`}
               >
                 Save Changes
               </button>
