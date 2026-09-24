@@ -39,8 +39,8 @@ export default function Header() {
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsSwitcherOpen(false)} />
             <div className="absolute left-0 top-full z-20 mt-2 w-56 rounded-md border border-border-subtle bg-white shadow-md">
-              <span className="block px-3 py-2 text-xs font-semibold text-text-gray">WORKSPACES</span>
-              <ul className="max-h-60 overflow-auto py-1">
+              <span className="block px-4 pt-3 pb-1 text-xs font-semibold text-text-gray">WORKSPACES</span>
+              <ul className="max-h-60 overflow-auto p-1">
                 {workspaces.map((workspace) => (
                   <li key={workspace.id}>
                     {renamingWorkspaceId === workspace.id ? (
@@ -65,7 +65,7 @@ export default function Header() {
                           setIsSwitcherOpen(false);
                         }}
                         style={workspace.id === activeWorkspaceId ? { color: accentColor } : undefined}
-                        className={`flex w-full items-center px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray ${
+                        className={`flex w-full rounded items-center px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray ${
                           workspace.id === activeWorkspaceId ? 'font-semibold' : ''
                         }`}
                       >
@@ -75,22 +75,24 @@ export default function Header() {
                   </li>
                 ))}
               </ul>
-              <button
-                type="button"
-                onClick={handleAddWorkspace}
-                className="flex w-full items-center gap-2 border-t border-border-subtle px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray"
-              >
-                <span
-                  style={{ backgroundColor: `${accentColor}1a` }}
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border-subtle"
+              <div className="p-1 border-t border-border-subtle">
+                <button
+                  type="button"
+                  onClick={handleAddWorkspace}
+                  className="flex rounded w-full items-center gap-2 px-3 py-2 text-left text-sm cursor-pointer hover:bg-hover-gray"
                 >
                   <span
-                    style={{ backgroundColor: accentColor }}
-                    className="h-4 w-4 [mask-image:url('/icons/add.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]"
-                  />
-                </span>
-                <span style={{ color: accentColor }}>New Workspace</span>
-              </button>
+                    style={{ backgroundColor: `${accentColor}1a` }}
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border-subtle"
+                  >
+                    <span
+                      style={{ backgroundColor: accentColor }}
+                      className="h-4 w-4 [mask-image:url('/icons/add.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]"
+                    />
+                  </span>
+                  <span style={{ color: accentColor }}>New Workspace</span>
+                </button>
+              </div>
             </div>
           </>
         )}

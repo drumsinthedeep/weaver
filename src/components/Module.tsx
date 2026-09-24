@@ -17,7 +17,9 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   const removeTask = useWorkspaceStore((state) => state.removeTask);
   const workspaces = useWorkspaceStore((state) => state.workspaces);
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
-  const isSharp = workspaces.find((w) => w.id === activeWorkspaceId)?.moduleStyle === 'sharp';
+  const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
+  const isSharp = activeWorkspace?.moduleStyle === 'sharp';
+  const accentColor = activeWorkspace?.accentColor ?? '#6366F1';
 
   const handleAddTask = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== 'Enter') return;
@@ -81,6 +83,8 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
               <li key={task.id} className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
+                  style={{ '--accent': accentColor } as React.CSSProperties}
+                  className="cursor-pointer relative appearance-none w-[14px] h-[14px] border border-border-subtle rounded-sm checked:bg-[var(--accent)] checked:border-[var(--accent)] checked:after:content-[''] checked:after:absolute checked:after:inset-[2px] checked:after:bg-white checked:after:[mask-image:url('/icons/check.svg')] checked:after:[mask-repeat:no-repeat] checked:after:[mask-position:center] checked:after:[mask-size:contain]"
                   checked={task.done}
                   onChange={() => toggleTask(module.id, task.id)}
                 />

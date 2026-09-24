@@ -19,6 +19,9 @@ export default function SettingsModal() {
   const closeSettings = useWorkspaceStore((state) => state.closeSettings);
   const profile = useWorkspaceStore((state) => state.profile);
   const updateProfile = useWorkspaceStore((state) => state.updateProfile);
+  const workspaces = useWorkspaceStore((state) => state.workspaces);
+  const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
+  const accentColor = workspaces.find((w) => w.id === activeWorkspaceId)?.accentColor ?? '#6366F1';
   const [activeTab, setActiveTab] = useState<SettingsTab>(settingsTab);
   const [draft, setDraft] = useState<ProfileDraft>(profile);
 
@@ -134,7 +137,8 @@ export default function SettingsModal() {
               <button
                 type="button"
                 onClick={handleSave}
-                className="cursor-pointer rounded-md bg-primary-purple px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
+                style={{ backgroundColor: accentColor }}
+                className="cursor-pointer rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
               >
                 Save Changes
               </button>
