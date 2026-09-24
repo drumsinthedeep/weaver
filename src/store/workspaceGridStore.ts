@@ -42,6 +42,11 @@ export const BACKGROUND_TINT_COLORS: Record<BackgroundTint, string> = {
   pure: '#FFFFFF',
 };
 
+export interface Profile {
+  name: string;
+  email: string;
+}
+
 export interface Workspace {
   id: string;
   name: string;
@@ -56,7 +61,15 @@ type WorkspaceSettings = Partial<
   Pick<Workspace, 'name' | 'description' | 'accentColor' | 'backgroundTint' | 'moduleStyle'>
 >;
 
+export type SettingsTab = 'account' | 'appearance' | 'notifications' | 'shortcuts';
+
 interface WorkspaceState {
+  profile: Profile;
+  updateProfile: (updates: Partial<Profile>) => void;
+  isSettingsOpen: boolean;
+  settingsTab: SettingsTab;
+  openSettings: (tab?: SettingsTab) => void;
+  closeSettings: () => void;
   workspaces: Workspace[];
   activeWorkspaceId: string;
   addWorkspace: () => void;
@@ -64,7 +77,6 @@ interface WorkspaceState {
   renameWorkspace: (id: string, name: string) => void;
   updateWorkspace: (id: string, updates: WorkspaceSettings) => void;
   setActiveWorkspace: (id: string) => void;
-
   addModule: (module: WorkspaceModule) => void;
   removeModule: (id: string) => void;
   setModules: (modules: WorkspaceModule[]) => void;
@@ -106,6 +118,12 @@ const defaultWorkspaceId = crypto.randomUUID();
 export const useWorkspaceStore = create<WorkspaceState>()(
   persist(
     (set) => ({
+      profile: { name: 'Daniel', email: '' },
+      updateProfile: (updates) => set((state) => ({ profile: { ...state.profile, ...updates } })),
+      isSettingsOpen: false,
+      settingsTab: 'account',
+      openSettings: (tab = 'account') => set({ isSettingsOpen: true, settingsTab: tab }),
+      closeSettings: () => set({ isSettingsOpen: false }),
       workspaces: [{ id: defaultWorkspaceId, name: 'My Workspace', modules: [] }],
       activeWorkspaceId: defaultWorkspaceId,
       addWorkspace: () =>
@@ -283,7 +301,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
     }),
     {
       name: 'weaver-workspace',
-      partialize: (state) => ({ workspaces: state.workspaces, activeWorkspaceId: state.activeWorkspaceId }),
+      partialize: (state) => ({
+        workspaces: state.workspaces,
+        activeWorkspaceId: state.activeWorkspaceId,
+        profile: state.profile,
+      }),
     }
   )
 );

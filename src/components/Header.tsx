@@ -9,7 +9,6 @@ export default function Header() {
   const addWorkspace = useWorkspaceStore((state) => state.addWorkspace);
   const openWorkspaceSettings = useWorkspaceStore((state) => state.openWorkspaceSettings);
   const renameWorkspace = useWorkspaceStore((state) => state.renameWorkspace);
-
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [renamingWorkspaceId, setRenamingWorkspaceId] = useState<string | null>(null);
   const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);

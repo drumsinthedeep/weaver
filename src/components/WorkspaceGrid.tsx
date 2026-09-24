@@ -43,7 +43,6 @@ function WorkspaceGrid(): React.JSX.Element {
     <div>
       <div
         ref={containerRef as React.RefObject<HTMLDivElement>}
-        style={{ backgroundColor: BACKGROUND_TINT_COLORS[backgroundTint] }}
         className="h-screen mr-[-14px]"
       >
         {mounted && (
@@ -63,6 +62,7 @@ function WorkspaceGrid(): React.JSX.Element {
             }}
             dragConfig={{ cancel: 'textarea', handle: '.drag-target' }}
             onLayoutChange={handleLayoutChange}
+            style={{ backgroundColor: BACKGROUND_TINT_COLORS[backgroundTint] }}
           >
             {modules.map((module) => (
               <Module key={module.id} module={module} />

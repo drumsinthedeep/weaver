@@ -11,11 +11,9 @@ function BrowserModule({ module }: BrowserModuleProps) {
   const setActiveBrowserTab = useWorkspaceStore((state) => state.setActiveBrowserTab);
   const navigateBrowserTab = useWorkspaceStore((state) => state.navigateBrowserTab);
   const updateBrowserTabMeta = useWorkspaceStore((state) => state.updateBrowserTabMeta);
-
   const tabs = module.tabs ?? [];
   const activeTabId = module.activeTabId ?? tabs[0]?.id;
   const activeTab = tabs.find((t) => t.id === activeTabId);
-
   const webviewRef = useRef<import('electron').WebviewTag>(null);
   const [urlDraft, setUrlDraft] = useState(activeTab?.url ?? '');
   const [canGoBack, setCanGoBack] = useState(false);
@@ -92,7 +90,6 @@ function BrowserModule({ module }: BrowserModuleProps) {
           +
         </button>
       </div>
-
       {activeTab && (
         <div className="flex items-center gap-1 border-b border-border-subtle p-1">
           <button
@@ -124,7 +121,6 @@ function BrowserModule({ module }: BrowserModuleProps) {
           />
         </div>
       )}
-
       {activeTab?.url ? (
         <webview ref={webviewRef} src={activeTab.url} className="flex-1" />
       ) : (

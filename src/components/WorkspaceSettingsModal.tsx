@@ -46,10 +46,8 @@ export default function WorkspaceSettingsModal() {
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const updateWorkspace = useWorkspaceStore((state) => state.updateWorkspace);
   const removeWorkspace = useWorkspaceStore((state) => state.removeWorkspace);
-
   const workspace = workspaces.find((w) => w.id === activeWorkspaceId);
   const canDelete = workspaces.length > 1;
-
   const [activeTab, setActiveTab] = useState<'general' | 'appearance'>('general');
   const [draft, setDraft] = useState<WorkspaceDraft>(() => toDraft(workspace));
 
@@ -73,7 +71,7 @@ export default function WorkspaceSettingsModal() {
   };
 
   const navButtonClass = (tab: 'general' | 'appearance') =>
-    `flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm cursor-pointer ${
+    `flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm cursor-pointer hover:text-primary-purple ${
       activeTab === tab ? 'font-semibold' : 'hover:bg-hover-gray'
     }`;
 
@@ -91,7 +89,7 @@ export default function WorkspaceSettingsModal() {
         }`}
       />
       <div
-        className={`fixed top-1/2 left-1/2 z-20 flex w-[700px] min-h-[553px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-lg border border-border-subtle bg-white shadow-md transition-all duration-200 ${
+        className={`fixed top-1/2 left-1/2 z-20 flex w-[700px] min-h-[553px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-border-subtle bg-white shadow-md transition-all duration-200 ${
           isOpen ? 'scale-100 opacity-100' : 'pointer-events-none scale-95 opacity-0'
         }`}
       >
@@ -115,7 +113,6 @@ export default function WorkspaceSettingsModal() {
           </button>
           <p className="text-xs text-text-gray px-3 mt-auto">Changes apply to this workspace only.</p>
         </div>
-
         <div className="flex flex-1 flex-col">
           <div className="flex items-center justify-between border-b border-border-subtle p-4">
             <div>
@@ -130,7 +127,6 @@ export default function WorkspaceSettingsModal() {
               <img src="/icons/close.svg" alt="Close" className="h-4 w-4" />
             </button>
           </div>
-
           <div className="flex-1 overflow-auto p-4">
             {activeTab === 'general' && (
               <div className="flex flex-col gap-4">
@@ -143,7 +139,6 @@ export default function WorkspaceSettingsModal() {
                     className="w-full rounded border border-gray-200 px-3 py-2 text-sm outline-none"
                   />
                 </div>
-
                 <div>
                   <label className="mb-1 block text-sm font-medium">Description</label>
                   <textarea
@@ -153,7 +148,6 @@ export default function WorkspaceSettingsModal() {
                     className="w-full resize-none rounded border border-gray-200 px-3 py-2 text-sm outline-none"
                   />
                 </div>
-
                 <div className="mt-4 border-t border-border-subtle pt-4">
                   <button
                     type="button"
@@ -167,7 +161,6 @@ export default function WorkspaceSettingsModal() {
                 </div>
               </div>
             )}
-
             {activeTab === 'appearance' && (
               <div className="flex flex-col gap-6">
                 <div>
@@ -186,7 +179,6 @@ export default function WorkspaceSettingsModal() {
                     ))}
                   </div>
                 </div>
-
                 <div>
                   <label className="mb-2 block text-sm font-medium">Background Tint</label>
                   <div className="grid grid-cols-4 gap-2">
@@ -209,7 +201,6 @@ export default function WorkspaceSettingsModal() {
                     ))}
                   </div>
                 </div>
-
                 <div>
                   <label className="mb-2 block text-sm font-medium">Module Style</label>
                   <div className="grid grid-cols-3 gap-2">
@@ -235,7 +226,6 @@ export default function WorkspaceSettingsModal() {
               </div>
             )}
           </div>
-
           <div className="flex items-center justify-between border-t border-border-subtle p-4">
             <div className="flex gap-2 ml-auto">
               <button

@@ -5,6 +5,7 @@ import WorkspaceGrid from './components/WorkspaceGrid';
 import AddModuleModal from './components/AddModuleModal';
 import ModuleSettingsModal from './components/ModuleSettingsModal';
 import WorkspaceSettingsModal from './components/WorkspaceSettingsModal';
+import SettingsModal from './components/SettingsModal';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <AddModuleModal />
         <ModuleSettingsModal />
         <WorkspaceSettingsModal />
+        <SettingsModal />
       </div>
     </div>
   );

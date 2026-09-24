@@ -18,7 +18,6 @@ export default function AddModuleModal() {
   const workspaces = useWorkspaceStore((state) => state.workspaces);
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const accentColor = workspaces.find((w) => w.id === activeWorkspaceId)?.accentColor ?? '#6366F1';
-
   const taskType: ModuleTypeOption = { name: 'Task', icon: '/icons/tasks.svg', iconWidth: 'w-8', description: 'Checklist with progress tracking and due dates.', type: 'tasks' };
   const noteType: ModuleTypeOption = { name: 'Note', icon: '/icons/notes.svg', iconWidth: 'w-7', description: 'Freeform notes, research logs, and markdown.', type: 'notes' };
   const browserType: ModuleTypeOption = { name: 'Browser', icon: '/icons/browser.svg', iconWidth: 'w-9', description: 'Browse websites natively inside your workspace.', type: 'browser' };

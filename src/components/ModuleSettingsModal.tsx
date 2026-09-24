@@ -11,7 +11,6 @@ export default function ModuleSettingsModal() {
   const duplicateModule = useWorkspaceStore((state) => state.duplicateModule);
   const updateModuleColor = useWorkspaceStore((state) => state.updateModuleColor);
   const modules = useActiveWorkspaceModules();
-
   const module = modules.find((m) => m.id === settingsModuleId);
   const isOpen = Boolean(module);
 
@@ -49,7 +48,6 @@ export default function ModuleSettingsModal() {
               className="w-full rounded border border-gray-200 px-2 py-1 text-sm outline-none placeholder:tracking-wide placeholder:text-text-gray"
             />
           </div>
-
           <div>
             <label className="mb-1 block text-[14px] font-medium text-text-gray">Color</label>
             <div className="flex gap-2">
@@ -68,7 +66,6 @@ export default function ModuleSettingsModal() {
               ))}
             </div>
           </div>
-
           <label className="flex items-center gap-2 text-sm mt-4">
             <input
               type="checkbox"
@@ -77,7 +74,6 @@ export default function ModuleSettingsModal() {
             />
             Lock position & size
           </label>
-
           <button
             type="button"
             onClick={() => module && duplicateModule(module.id)}
