@@ -5,9 +5,8 @@ import {
   BackgroundTint,
   ModuleStyle,
   BACKGROUND_TINT_COLORS,
+  ACCENT_COLORS,
 } from '../store/workspaceGridStore';
-
-const ACCENT_COLORS = ['#6366F1', '#1a5edc', '#38BDF8', '#22C55E', '#EF4444', '#F59E0B', '#64748B', '#EC4899'];
 
 const BACKGROUND_TINTS: { value: BackgroundTint; label: string }[] = [
   { value: 'default', label: 'Default' },
@@ -71,7 +70,7 @@ export default function WorkspaceSettingsModal() {
   };
 
   const navButtonClass = (tab: 'general' | 'appearance') =>
-    `flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm cursor-pointer hover:text-primary-purple ${
+    `flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm cursor-pointer ${
       activeTab === tab ? 'font-semibold' : 'hover:bg-hover-gray'
     }`;
 

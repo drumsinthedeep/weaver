@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useWorkspaceStore, SettingsTab } from '../store/workspaceGridStore';
+import { useWorkspaceStore, SettingsTab, Profile, ACCENT_COLORS } from '../store/workspaceGridStore';
 
 const NAV_ITEMS: { value: SettingsTab; label: string; }[] = [
   { value: 'account', label: 'Account' },
@@ -11,6 +11,15 @@ const NAV_ITEMS: { value: SettingsTab; label: string; }[] = [
 interface ProfileDraft {
   name: string;
   email: string;
+  accentColor: string;
+}
+
+function toDraft(profile: Profile): ProfileDraft {
+  return {
+    name: profile.name,
+    email: profile.email,
+    accentColor: profile.accentColor ?? ACCENT_COLORS[0],
+  };
 }
 
 export default function SettingsModal() {
@@ -19,16 +28,13 @@ export default function SettingsModal() {
   const closeSettings = useWorkspaceStore((state) => state.closeSettings);
   const profile = useWorkspaceStore((state) => state.profile);
   const updateProfile = useWorkspaceStore((state) => state.updateProfile);
-  const workspaces = useWorkspaceStore((state) => state.workspaces);
-  const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
-  const accentColor = workspaces.find((w) => w.id === activeWorkspaceId)?.accentColor ?? '#6366F1';
   const [activeTab, setActiveTab] = useState<SettingsTab>(settingsTab);
-  const [draft, setDraft] = useState<ProfileDraft>(profile);
+  const [draft, setDraft] = useState<ProfileDraft>(() => toDraft(profile));
 
   useEffect(() => {
     if (isOpen) {
       setActiveTab(settingsTab);
-      setDraft(profile);
+      setDraft(toDraft(profile));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -61,9 +67,9 @@ export default function SettingsModal() {
               key={item.value}
               type="button"
               onClick={() => setActiveTab(item.value)}
-              className={`flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:text-primary-purple ${
-                activeTab === item.value
-                  ? 'bg-primary-purple/10 font-semibold text-primary-purple cursor-pointer' : 'cursor-pointer hover:bg-hover-gray'
+              style={activeTab === item.value ? { backgroundColor: `${draft.accentColor}1a`, color: draft.accentColor } : undefined}
+              className={`flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm cursor-pointer ${
+                activeTab === item.value ? 'font-semibold' : 'hover:bg-hover-gray'
               }`}
             >
               {item.label}
@@ -87,7 +93,10 @@ export default function SettingsModal() {
             {activeTab === 'account' && (
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary-purple text-xl font-semibold text-white">
+                  <span
+                    style={{ backgroundColor: draft.accentColor }}
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-white"
+                  >
                     {initial}
                   </span>
                   <div>
@@ -122,7 +131,25 @@ export default function SettingsModal() {
               </div>
             )}
             {activeTab === 'appearance' && (
-              <p className="text-sm text-text-gray">Appearance settings are coming soon.</p>
+              <div className="flex flex-col gap-6">
+                <div>
+                  <label className="mb-2 block text-sm font-medium">Accent Color</label>
+                  <p className="mb-2 text-xs text-text-gray">Used on your Home page and sidebar.</p>
+                  <div className="flex flex-wrap gap-2">
+                    {ACCENT_COLORS.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setDraft({ ...draft, accentColor: color })}
+                        style={{ backgroundColor: color }}
+                        className={`h-8 w-8 cursor-pointer rounded-full ${
+                          draft.accentColor === color ? 'ring-2 ring-offset-2 ring-light-black' : ''
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
           </div>
           <div className="flex items-center justify-between border-t border-border-subtle p-4">
@@ -137,8 +164,8 @@ export default function SettingsModal() {
               <button
                 type="button"
                 onClick={handleSave}
-                style={{ backgroundColor: accentColor }}
-                className={`cursor-pointer border-1 rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90`}
+                style={{ backgroundColor: draft.accentColor }}
+                className="cursor-pointer border rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
               >
                 Save Changes
               </button>

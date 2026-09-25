@@ -45,7 +45,10 @@ export const BACKGROUND_TINT_COLORS: Record<BackgroundTint, string> = {
 export interface Profile {
   name: string;
   email: string;
+  accentColor?: string;
 }
+
+export const ACCENT_COLORS = ['#6366F1', '#1a5edc', '#38BDF8', '#22C55E', '#EF4444', '#F59E0B', '#64748B', '#EC4899'];
 
 export interface Workspace {
   id: string;

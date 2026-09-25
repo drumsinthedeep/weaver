@@ -17,6 +17,7 @@ export default function Home() {
   const addWorkspace = useWorkspaceStore((state) => state.addWorkspace);
   const setActiveWorkspace = useWorkspaceStore((state) => state.setActiveWorkspace);
   const setActiveView = useWorkspaceStore((state) => state.setActiveView);
+  const accentColor = profile.accentColor ?? '#6366F1';
   const totalModules = workspaces.reduce((sum, w) => sum + w.modules.length, 0);
   const allModules = workspaces.flatMap((w) => w.modules);
   const openTasks = allModules
@@ -61,7 +62,8 @@ export default function Home() {
             <button
               type="button"
               onClick={handleNewWorkspace}
-              className="flex items-center bg-primary-purple cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
+              style={{ backgroundColor: accentColor }}
+              className="flex items-center cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium text-white hover:opacity-90"
             >
               <img src="/icons/add.svg" alt="" className="w-4" />
               New Workspace
@@ -114,8 +116,8 @@ export default function Home() {
                   <div className="mt-3">
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-hover-gray">
                       <div
-                        className="h-full rounded-full bg-primary-purple"
-                        style={{ width: `${(doneTasks / allTasks.length) * 100}%` }}
+                        className="h-full rounded-full"
+                        style={{ width: `${(doneTasks / allTasks.length) * 100}%`, backgroundColor: accentColor }}
                       />
                     </div>
                     <p className="mt-1 text-xs text-text-gray">
