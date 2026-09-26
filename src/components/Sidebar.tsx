@@ -6,8 +6,10 @@ export default function Sidebar() {
   const openSettings = useWorkspaceStore((state) => state.openSettings);
   const activeView = useWorkspaceStore((state) => state.activeView);
   const setActiveView = useWorkspaceStore((state) => state.setActiveView);
+  const toggleSidebarCollapsed = useWorkspaceStore((state) => state.toggleSidebarCollapsed);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const accentColor = profile.accentColor ?? '#6366F1';
+  const collapsed = profile.sidebarCollapsed ?? false;
   const handleNavigate = (tab: 'account' | 'appearance') => {
     openSettings(tab);
     setIsAccountMenuOpen(false);
@@ -16,62 +18,103 @@ export default function Sidebar() {
   return (
     <div
       style={{ '--accent': accentColor, '--accent-tint': `${accentColor}1a` } as React.CSSProperties}
-      className="flex flex-col gap-2 bg-white border-r border-border-subtle p-2 ml-[-14px] sticky top-0 z-10 h-screen w-[200px]"
+      className={`flex flex-col gap-2 bg-white border-r border-border-subtle p-2 ml-[-14px] sticky top-0 z-10 h-screen transition-[width] duration-200 ${
+        collapsed ? 'w-[64px]' : 'w-[200px]'
+      }`}
     >
-      <div className="flex flex-row p-3 pl-2 items-center">
-        <img src="/icons/weaver-logo.svg" alt="" className="w-[40px] inline-block mr-2" />
-        <h1 className="font-raleway text-lg font-semibold">WEAVER</h1>
+      <div className={`flex items-center p-3 ${collapsed ? 'justify-center px-1' : 'pl-2'}`}>
+        {!collapsed && (
+          <>
+            <img src="/icons/weaver-logo.svg" alt="" className="w-[40px] inline-block mr-2" />
+            <h1 className="font-raleway text-lg font-semibold">WEAVER</h1>
+          </>
+        )}
+        {collapsed && (
+          <img src="/icons/weaver-logo.svg" alt="" className="w-[40px] inline-block" />
+        )}
+        <button
+          type="button"
+          onClick={toggleSidebarCollapsed}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className="cursor-pointer rounded border border-border-subtle p-1 hover:bg-hover-gray bg-white absolute top-6 right-[-13px] -translate-y-1/2"
+        >
+          <span
+            className="block h-4 w-4 bg-text-gray [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]"
+            style={{ maskImage: `url(/icons/${collapsed ? 'right-caret' : 'left-caret'}.svg)` }}
+          />
+      </button>
       </div>
       <div className="flex flex-col">
         <button
           type="button"
           onClick={() => setActiveView('home')}
-          className={`group p-2 flex items-center leading-normal rounded ${
+          title={collapsed ? 'Home' : undefined}
+          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'justify-center' : ''} ${
             activeView === 'home'
               ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
               : 'text-light-black hover:bg-hover-gray'
           }`}
         >
           <span
-            className={`mr-2 mb-[1px] inline-block h-5 w-5 [mask-image:url('/icons/home.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
-              activeView === 'home' ? 'bg-[var(--accent)]' : 'bg-text-gray'
-            }`}
+            className={`mb-[1px] inline-block h-5 w-5 shrink-0 [mask-image:url('/icons/home.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+              collapsed ? '' : 'mr-2'
+            } ${activeView === 'home' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
           />
-          Home
+          {!collapsed && 'Home'}
         </button>
         <button
           type="button"
           onClick={() => setActiveView('workspace')}
-          className={`group p-2 flex items-center leading-normal rounded ${
+          title={collapsed ? 'Workspaces' : undefined}
+          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'justify-center' : ''} ${
             activeView === 'workspace'
               ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
               : 'text-light-black hover:bg-hover-gray'
           }`}
         >
           <span
-            className={`mr-2 mb-[-1px] inline-block h-5 w-5 [mask-image:url('/icons/grid.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
-              activeView === 'workspace' ? 'bg-[var(--accent)]' : 'bg-text-gray'
+            className={`mb-[-1px] inline-block h-5 w-5 shrink-0 [mask-image:url('/icons/grid.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+              collapsed ? '' : 'mr-2'
+            } ${activeView === 'workspace' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
+          />
+          {!collapsed && 'Workspaces'}
+        </button>
+        <a
+          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'justify-center' : ''}`}
+          href="#"
+          title={collapsed ? 'Archives' : undefined}
+        >
+          <span
+            className={`mb-[1px] inline-block h-5 w-5 shrink-0 bg-text-gray [mask-image:url('/icons/archive.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+              collapsed ? '' : 'mr-2'
             }`}
           />
-          Workspaces
-        </button>
-        <a className="group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded" href="#">
-          <span className="mr-2 mb-[1px] inline-block h-5 w-5 bg-text-gray [mask-image:url('/icons/archive.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
-          Archives
+          {!collapsed && 'Archives'}
         </a>
-        <a className="group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded" href="#">
-          <span className="mr-2 mb-[1px] inline-block h-5 w-5 bg-text-gray [mask-image:url('/icons/star.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
-          Favorites
+        <a
+          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'justify-center' : ''}`}
+          href="#"
+          title={collapsed ? 'Favorites' : undefined}
+        >
+          <span
+            className={`mb-[1px] inline-block h-5 w-5 shrink-0 bg-text-gray [mask-image:url('/icons/star.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+              collapsed ? '' : 'mr-2'
+            }`}
+          />
+          {!collapsed && 'Favorites'}
         </a>
       </div>
       <div className="relative mt-auto border-t border-border-subtle pt-2">
         <button
           type="button"
           onClick={() => setIsAccountMenuOpen((open) => !open)}
-          className="flex w-full flex-row p-2 text-light-black items-center leading-none hover:bg-hover-gray rounded cursor-pointer"
+          title={collapsed ? profile.name || 'Account' : undefined}
+          className={`flex w-full flex-row p-2 text-light-black items-center leading-none hover:bg-hover-gray rounded cursor-pointer ${
+            collapsed ? 'justify-center' : ''
+          }`}
         >
-          <img src="/icons/user.svg" alt="" className="w-5 h-5 mr-2" />
-          {profile.name || 'Account'}
+          <img src="/icons/user.svg" alt="" className={`w-5 h-5 shrink-0 ${collapsed ? '' : 'mr-2'}`} />
+          {!collapsed && (profile.name || 'Account')}
         </button>
         {isAccountMenuOpen && (
           <>

@@ -46,6 +46,7 @@ export interface Profile {
   name: string;
   email: string;
   accentColor?: string;
+  sidebarCollapsed?: boolean;
 }
 
 export const ACCENT_COLORS = ['#6366F1', '#1a5edc', '#38BDF8', '#22C55E', '#EF4444', '#F59E0B', '#64748B', '#EC4899'];
@@ -70,6 +71,7 @@ export type AppView = 'home' | 'workspace';
 interface WorkspaceState {
   profile: Profile;
   updateProfile: (updates: Partial<Profile>) => void;
+  toggleSidebarCollapsed: () => void;
   isSettingsOpen: boolean;
   settingsTab: SettingsTab;
   openSettings: (tab?: SettingsTab) => void;
@@ -126,6 +128,8 @@ export const useWorkspaceStore = create<WorkspaceState>()(
     (set) => ({
       profile: { name: 'Daniel', email: '' },
       updateProfile: (updates) => set((state) => ({ profile: { ...state.profile, ...updates } })),
+      toggleSidebarCollapsed: () =>
+        set((state) => ({ profile: { ...state.profile, sidebarCollapsed: !state.profile.sidebarCollapsed } })),
       isSettingsOpen: false,
       settingsTab: 'account',
       openSettings: (tab = 'account') => set({ isSettingsOpen: true, settingsTab: tab }),

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800"
+   height="800"
+   viewBox="0 0 24 24"
+   fill="none"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="caret-left-svgrepo-com (1).svg"
+   inkscape:export-filename="caret-left-svgrepo-com (1).png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="24"
+       height="24"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <path
+     fill-rule="evenodd"
+     clip-rule="evenodd"
+     d="m 8.792875,6.29289 c -0.3905,0.39053 -0.3905,1.02369 0,1.41422 l 4.2929,4.29289 -4.2929,4.2929 c -0.3905,0.3905 -0.3905,1.0237 0,1.4142 0.3905,0.3905 1.0237,0.3905 1.4142,0 l 5.00001,-5 c 0.39052,-0.3905 0.39052,-1.0237 0,-1.4142 l -5.00001,-5.00001 c -0.3905,-0.39052 -1.0237,-0.39052 -1.4142,0 z"
+     fill="#000000"
+     id="path1" />
+</svg>
