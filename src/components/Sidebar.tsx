@@ -18,31 +18,19 @@ export default function Sidebar() {
   return (
     <div
       style={{ '--accent': accentColor, '--accent-tint': `${accentColor}1a` } as React.CSSProperties}
-      className={`flex flex-col gap-2 bg-white border-r border-border-subtle p-2 ml-[-14px] sticky top-0 z-10 h-screen transition-[width] duration-200 ${
+      className={`flex flex-col gap-2 bg-white border-r border-border-subtle p-2 ml-[-14px] sticky top-0 z-10 h-screen transition-[width] duration-200 ease-in ${
         collapsed ? 'w-[64px]' : 'w-[200px]'
       }`}
     >
       <div className={`flex items-center p-3 ${collapsed ? 'justify-center px-1' : 'pl-2'}`}>
-        {!collapsed && (
-          <>
-            <img src="/icons/weaver-logo.svg" alt="" className="w-[40px] inline-block mr-2" />
-            <h1 className="font-raleway text-lg font-semibold">WEAVER</h1>
-          </>
-        )}
-        {collapsed && (
-          <img src="/icons/weaver-logo.svg" alt="" className="w-[40px] inline-block" />
-        )}
-        <button
-          type="button"
-          onClick={toggleSidebarCollapsed}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="cursor-pointer rounded border border-border-subtle p-1 hover:bg-hover-gray bg-white absolute top-6 right-[-13px] -translate-y-1/2"
+        <img src="/icons/weaver-logo.svg" alt="" className={`w-[40px] inline-block shrink-0 ${collapsed ? '' : 'mr-2'}`} />
+        <h1
+          className={`font-raleway text-lg font-semibold overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
+            collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+          }`}
         >
-          <span
-            className="block h-4 w-4 bg-text-gray [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]"
-            style={{ maskImage: `url(/icons/${collapsed ? 'right-caret' : 'left-caret'}.svg)` }}
-          />
-      </button>
+          WEAVER
+        </h1>
       </div>
       <div className="flex flex-col">
         <button
@@ -60,7 +48,13 @@ export default function Sidebar() {
               collapsed ? '' : 'mr-2'
             } ${activeView === 'home' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
           />
-          {!collapsed && 'Home'}
+          <span
+            className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+            }`}
+          >
+            Home
+          </span>
         </button>
         <button
           type="button"
@@ -77,19 +71,31 @@ export default function Sidebar() {
               collapsed ? '' : 'mr-2'
             } ${activeView === 'workspace' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
           />
-          {!collapsed && 'Workspaces'}
+          <span
+            className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+            }`}
+          >
+            Workspaces
+          </span>
         </button>
         <a
           className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'justify-center' : ''}`}
           href="#"
-          title={collapsed ? 'Archives' : undefined}
+          title={collapsed ? 'Archive' : undefined}
         >
           <span
             className={`mb-[1px] inline-block h-5 w-5 shrink-0 bg-text-gray [mask-image:url('/icons/archive.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
               collapsed ? '' : 'mr-2'
             }`}
           />
-          {!collapsed && 'Archives'}
+          <span
+            className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+            }`}
+          >
+            Archive
+          </span>
         </a>
         <a
           className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'justify-center' : ''}`}
@@ -101,7 +107,13 @@ export default function Sidebar() {
               collapsed ? '' : 'mr-2'
             }`}
           />
-          {!collapsed && 'Favorites'}
+          <span
+            className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+            }`}
+          >
+            Favorites
+          </span>
         </a>
       </div>
       <div className="relative mt-auto border-t border-border-subtle pt-2">
@@ -114,7 +126,13 @@ export default function Sidebar() {
           }`}
         >
           <img src="/icons/user.svg" alt="" className={`w-5 h-5 shrink-0 ${collapsed ? '' : 'mr-2'}`} />
-          {!collapsed && (profile.name || 'Account')}
+          <span
+            className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
+            }`}
+          >
+            {profile.name || 'Account'}
+          </span>
         </button>
         {isAccountMenuOpen && (
           <>
@@ -153,6 +171,17 @@ export default function Sidebar() {
           </>
         )}
       </div>
+      <button
+        type="button"
+        onClick={toggleSidebarCollapsed}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        className="cursor-pointer rounded-lg border border-border-subtle p-1 hover:bg-hover-gray bg-white absolute top-1/2 right-[-13px] -translate-y-1/2"
+      >
+        <span
+          className="block h-4 w-4 bg-text-gray [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]"
+          style={{ maskImage: `url(/icons/${collapsed ? 'right-caret' : 'left-caret'}.svg)` }}
+        />
+      </button>
     </div>
   );
 }
