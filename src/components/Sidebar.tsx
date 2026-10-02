@@ -19,11 +19,11 @@ export default function Sidebar() {
     <div
       style={{ '--accent': accentColor, '--accent-tint': `${accentColor}1a` } as React.CSSProperties}
       className={`flex flex-col gap-2 bg-white border-r border-border-subtle p-2 ml-[-14px] sticky top-0 z-10 h-screen transition-[width] duration-200 ease-in ${
-        collapsed ? 'w-[64px]' : 'w-[200px]'
+        collapsed ? 'w-[53px]' : 'w-[200px]'
       }`}
     >
-      <div className={`flex items-center p-3 ${collapsed ? 'justify-center px-1' : 'pl-2'}`}>
-        <img src="/icons/weaver-logo.svg" alt="" className={`w-[40px] inline-block shrink-0 ${collapsed ? '' : 'mr-2'}`} />
+      <div className={`flex items-center py-3 ml-[-2px]`}>
+        <img src="/icons/weaver-logo.svg" alt="" className={`w-[40px] max-w-none inline-block shrink-0 mr-2`} />
         <h1
           className={`font-raleway text-lg font-semibold overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
             collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'
@@ -37,8 +37,8 @@ export default function Sidebar() {
           type="button"
           onClick={() => setActiveView('home')}
           title={collapsed ? 'Home' : undefined}
-          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'justify-center' : ''} ${
-            activeView === 'home'
+          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
+            ${activeView === 'home'
               ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
               : 'text-light-black hover:bg-hover-gray'
           }`}
@@ -60,16 +60,16 @@ export default function Sidebar() {
           type="button"
           onClick={() => setActiveView('workspace')}
           title={collapsed ? 'Workspaces' : undefined}
-          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'justify-center' : ''} ${
-            activeView === 'workspace'
+          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
+            ${activeView === 'workspace'
               ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
               : 'text-light-black hover:bg-hover-gray'
           }`}
         >
           <span
-            className={`mb-[-1px] inline-block h-5 w-5 shrink-0 [mask-image:url('/icons/grid.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
-              collapsed ? '' : 'mr-2'
-            } ${activeView === 'workspace' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
+            className={`mb-[-1px] inline-block h-5 w-5 shrink-0 [mask-image:url('/icons/grid.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]
+              ${collapsed ? '' : 'mr-2'} 
+              ${activeView === 'workspace' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
           />
           <span
             className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
@@ -80,7 +80,7 @@ export default function Sidebar() {
           </span>
         </button>
         <a
-          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'justify-center' : ''}`}
+          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'w-fit' : ''}`}
           href="#"
           title={collapsed ? 'Archive' : undefined}
         >
@@ -98,7 +98,7 @@ export default function Sidebar() {
           </span>
         </a>
         <a
-          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'justify-center' : ''}`}
+          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'w-fit' : ''}`}
           href="#"
           title={collapsed ? 'Favorites' : undefined}
         >
