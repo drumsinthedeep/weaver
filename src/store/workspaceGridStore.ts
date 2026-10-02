@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type ModuleType = 'browser' | 'notes' | 'tasks';
+export type ModuleType = 'browser' | 'notes' | 'tasks' | 'bookmark';
 
 export interface Task {
   id: string;
@@ -16,6 +16,13 @@ export interface BrowserTab {
   favicon?: string;
 }
 
+export interface Bookmark {
+  id: string;
+  url: string;
+  title: string;
+  tag?: string;
+}
+
 export interface WorkspaceModule {
   id: string;
   type: ModuleType;
@@ -27,6 +34,7 @@ export interface WorkspaceModule {
   tasks?: Task[];
   tabs?: BrowserTab[];
   activeTabId?: string;
+  bookmarks?: Bookmark[];
   name?: string;
   locked?: boolean;
   color?: string;
@@ -97,6 +105,9 @@ interface WorkspaceState {
   setActiveBrowserTab: (moduleId: string, tabId: string) => void;
   navigateBrowserTab: (moduleId: string, tabId: string, url: string) => void;
   updateBrowserTabMeta: (moduleId: string, tabId: string, meta: { title?: string; favicon?: string }) => void;
+  addBookmark: (moduleId: string, bookmark: Bookmark) => void;
+  removeBookmark: (moduleId: string, bookmarkId: string) => void;
+  updateBookmarkTitle: (moduleId: string, bookmarkId: string, title: string) => void;
   isAddModuleModalOpen: boolean;
   openAddModuleModal: () => void;
   closeAddModuleModal: () => void;
@@ -259,6 +270,34 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             modules.map((m) =>
               m.id === moduleId
                 ? { ...m, tabs: (m.tabs ?? []).map((t) => (t.id === tabId ? { ...t, ...meta } : t)) }
+                : m
+            )
+          ),
+        })),
+      addBookmark: (moduleId, bookmark) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId ? { ...m, bookmarks: [...(m.bookmarks ?? []), bookmark] } : m
+            )
+          ),
+        })),
+      updateBookmarkTitle: (moduleId, bookmarkId, title) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId
+                ? { ...m, bookmarks: (m.bookmarks ?? []).map((b) => (b.id === bookmarkId ? { ...b, title } : b)) }
+                : m
+            )
+          ),
+        })),
+      removeBookmark: (moduleId, bookmarkId) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId
+                ? { ...m, bookmarks: (m.bookmarks ?? []).filter((b) => b.id !== bookmarkId) }
                 : m
             )
           ),

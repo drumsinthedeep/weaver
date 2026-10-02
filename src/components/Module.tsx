@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useRef } from 'react';
 import { useWorkspaceStore, WorkspaceModule } from '../store/workspaceGridStore';
 import BrowserModule from './BrowserModule';
 
@@ -15,6 +15,9 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   const addTask = useWorkspaceStore((state) => state.addTask);
   const toggleTask = useWorkspaceStore((state) => state.toggleTask);
   const removeTask = useWorkspaceStore((state) => state.removeTask);
+  const addBookmark = useWorkspaceStore((state) => state.addBookmark);
+  const removeBookmark = useWorkspaceStore((state) => state.removeBookmark);
+  const updateBookmarkTitle = useWorkspaceStore((state) => state.updateBookmarkTitle);
   const workspaces = useWorkspaceStore((state) => state.workspaces);
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
@@ -27,6 +30,38 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     if (!value) return;
     addTask(module.id, value);
     e.currentTarget.value = '';
+  };
+
+  const bookmarkUrlInputRef = useRef<HTMLInputElement>(null);
+  const bookmarkTagInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAddBookmark = () => {
+    const value = bookmarkUrlInputRef.current?.value.trim();
+    if (!value) return;
+    const url = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+    let title = url;
+    try {
+      title = new URL(url).hostname;
+    } catch {
+      // Not a valid URL once prefixed — fall back to showing the raw input as the title.
+    }
+    const tag = bookmarkTagInputRef.current?.value.trim() || undefined;
+    const id = crypto.randomUUID();
+    addBookmark(module.id, { id, url, title, tag });
+    if (bookmarkUrlInputRef.current) bookmarkUrlInputRef.current.value = '';
+    if (bookmarkTagInputRef.current) bookmarkTagInputRef.current.value = '';
+
+    window.ipcRenderer.invoke('fetch-page-title', url).then((pageTitle: string | null) => {
+      if (pageTitle) updateBookmarkTitle(module.id, id, pageTitle);
+    });
+  };
+
+  const handleBookmarkInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') handleAddBookmark();
+  };
+
+  const openExternalUrl = (url: string) => {
+    window.ipcRenderer.invoke('open-external', url);
   };
 
   const cardStyle: React.CSSProperties = {
@@ -96,6 +131,76 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                 </button>
               </li>
             ))}
+          </ul>
+        </div>
+      )}
+      {module.type === 'bookmark' && (
+        <div className="flex flex-1 flex-col overflow-auto p-2">
+          <div
+            style={{ '--accent': accentColor } as React.CSSProperties}
+            className="flex items-center gap-1 rounded-md border border-border-subtle px-2 transition-colors focus-within:border-[var(--accent)]"
+          >
+            <input
+              type="text"
+              ref={bookmarkUrlInputRef}
+              onKeyDown={handleBookmarkInputKeyDown}
+              placeholder="Paste a URL and press Enter"
+              className="flex-1 py-1.5 text-sm outline-none placeholder:text-text-gray"
+            />
+            <input
+              type="text"
+              ref={bookmarkTagInputRef}
+              onKeyDown={handleBookmarkInputKeyDown}
+              placeholder="Tag"
+              className="w-16 border-l border-border-subtle py-1.5 pl-2 text-sm outline-none placeholder:text-text-gray"
+            />
+          </div>
+          <ul className="mt-2 flex flex-col gap-1">
+            {(module.bookmarks ?? []).map((bookmark) => {
+              let hostname: string | null = null;
+              try {
+                hostname = new URL(bookmark.url).hostname;
+              } catch {
+                // Leave hostname null — falls back to the generic bookmark glyph below.
+              }
+
+              return (
+                <li key={bookmark.id} className="flex items-center gap-2 text-sm">
+                  {hostname ? (
+                    <img
+                      src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=32`}
+                      alt=""
+                      className="h-[14px] w-[14px] shrink-0 rounded-sm"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/icons/bookmark.svg';
+                      }}
+                    />
+                  ) : (
+                    <span className="h-[14px] w-[14px] shrink-0 bg-text-gray [mask-image:url('/icons/bookmark.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+                  )}
+                  <span
+                    title={bookmark.url}
+                    onClick={() => openExternalUrl(bookmark.url)}
+                    className="flex-1 truncate cursor-pointer hover:underline"
+                  >
+                    {bookmark.title}
+                  </span>
+                  {bookmark.tag && (
+                    <span className="shrink-0 rounded-full bg-hover-gray px-2 py-0.5 text-xs text-text-gray">
+                      {bookmark.tag}
+                    </span>
+                  )}
+                  <button
+                    className="cursor-pointer"
+                    type="button"
+                    onClick={() => removeBookmark(module.id, bookmark.id)}
+                  >
+                    ×
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
