@@ -107,12 +107,17 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
       )}
       {module.type === 'tasks' && (
         <div className="flex flex-1 flex-col overflow-auto p-2">
-          <input
-            type="text"
-            onKeyDown={handleAddTask}
-            placeholder="Add a task and press Enter"
-            className="border-b border-border-subtle py-1 text-sm outline-none placeholder:text-text-gray"
-          />
+          <div
+            style={{ '--accent': accentColor } as React.CSSProperties}
+            className="rounded-md border border-border-subtle px-2 transition-colors focus-within:border-[var(--accent)]"
+          >
+            <input
+              type="text"
+              onKeyDown={handleAddTask}
+              placeholder="Add a task and press Enter"
+              className="w-full py-1.5 text-sm outline-none placeholder:text-text-gray"
+            />
+          </div>
           <ul className="mt-2 flex flex-col gap-1">
             {(module.tasks ?? []).map((task) => (
               <li key={task.id} className="flex items-center gap-2 text-sm">
