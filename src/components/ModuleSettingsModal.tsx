@@ -82,7 +82,7 @@ export default function ModuleSettingsModal() {
             Duplicate Module
           </button>
         </div>
-        <div className="flex justify-end border-t border-border-subtle p-4">
+        <div className="flex justify-start border-t border-border-subtle p-4">
           <button
             type="button"
             onClick={() => module && removeModule(module.id)}
