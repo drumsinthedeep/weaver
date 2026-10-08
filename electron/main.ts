@@ -1,7 +1,8 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import fs from 'node:fs/promises'
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -67,6 +68,18 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('open-external', (_event, url: string) => shell.openExternal(url))
+ipcMain.handle('open-path', (_event, filePath: string) => shell.openPath(filePath))
+
+ipcMain.handle('select-files', async () => {
+  const result = await dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
+  if (result.canceled) return []
+  return Promise.all(
+    result.filePaths.map(async (filePath) => {
+      const stats = await fs.stat(filePath)
+      return { path: filePath, size: stats.size }
+    })
+  )
+})
 
 const HTML_ENTITIES: Record<string, string> = {
   '&amp;': '&',

@@ -18,6 +18,8 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   const addBookmark = useWorkspaceStore((state) => state.addBookmark);
   const removeBookmark = useWorkspaceStore((state) => state.removeBookmark);
   const updateBookmarkTitle = useWorkspaceStore((state) => state.updateBookmarkTitle);
+  const addFile = useWorkspaceStore((state) => state.addFile);
+  const removeFile = useWorkspaceStore((state) => state.removeFile);
   const workspaces = useWorkspaceStore((state) => state.workspaces);
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
@@ -64,6 +66,24 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     window.ipcRenderer.invoke('open-external', url);
   };
 
+  const openPath = (path: string) => {
+    window.ipcRenderer.invoke('open-path', path);
+  };
+
+  const handleSelectFiles = async () => {
+    const files: { path: string; size: number }[] = await window.ipcRenderer.invoke('select-files');
+    files.forEach(({ path, size }) => {
+      const name = path.split(/[\\/]/).pop() || path;
+      addFile(module.id, { id: crypto.randomUUID(), path, name, size, addedAt: new Date().toISOString() });
+    });
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
   const cardStyle: React.CSSProperties = {
     ...style,
     ...(module.color && { borderTopColor: module.color, borderTopWidth: '4px' }),
@@ -89,7 +109,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
         </div>
         <span
           className={`mx-1 bg-text-gray ${module.type === 'notes' ? 'w-3 h-3' : module.type === 'tasks' ? 'w-[14px] h-[14px]' : 'w-4 h-4'} [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]`}
-          style={{ maskImage: `url(/icons/${module.type}.svg)` }}
+          style={{ maskImage: `url(/icons/${module.type === 'file' ? 'folder' : module.type}.svg)` }}
         />
         <h3 className="text-xs">{module.name || module.type}</h3>
         <button className="ml-auto p-2 flex items-center cursor-pointer hover:bg-hover-gray rounded" onClick={() => openModuleSettings(module.id)}>
@@ -120,7 +140,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           </div>
           <ul className="mt-2 flex flex-col gap-1">
             {(module.tasks ?? []).map((task) => (
-              <li key={task.id} className="flex items-center gap-2 text-sm">
+              <li key={task.id} className="group flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
                   style={{ '--accent': accentColor } as React.CSSProperties}
@@ -131,8 +151,12 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                 <span className={`flex-1 ${task.done ? 'text-text-gray line-through' : ''}`}>
                   {task.label}
                 </span>
-                <button className="cursor-pointer" type="button" onClick={() => removeTask(module.id, task.id)}>
-                  ×
+                <button
+                  type="button"
+                  onClick={() => removeTask(module.id, task.id)}
+                  className="shrink-0 cursor-pointer rounded p-1 opacity-0 transition-opacity hover:bg-hover-gray group-hover:opacity-100"
+                >
+                  <span className="block h-3 w-3 bg-text-gray [mask-image:url('/icons/close.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
                 </button>
               </li>
             ))}
@@ -170,7 +194,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
               }
 
               return (
-                <li key={bookmark.id} className="flex items-center gap-2 text-sm">
+                <li key={bookmark.id} className="group flex items-center gap-2 text-sm">
                   {hostname ? (
                     <img
                       src={`https://www.google.com/s2/favicons?domain=${hostname}&sz=32`}
@@ -187,7 +211,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                   <span
                     title={bookmark.url}
                     onClick={() => openExternalUrl(bookmark.url)}
-                    className="flex-1 truncate cursor-pointer hover:underline"
+                    className="min-w-0 flex-1 truncate cursor-pointer hover:underline"
                   >
                     {bookmark.title}
                   </span>
@@ -197,15 +221,53 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                     </span>
                   )}
                   <button
-                    className="cursor-pointer"
                     type="button"
                     onClick={() => removeBookmark(module.id, bookmark.id)}
+                    className="shrink-0 cursor-pointer rounded p-1 opacity-0 transition-opacity hover:bg-hover-gray group-hover:opacity-100"
                   >
-                    ×
+                    <span className="block h-3 w-3 bg-text-gray [mask-image:url('/icons/close.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
                   </button>
                 </li>
               );
             })}
+          </ul>
+        </div>
+      )}
+      {module.type === 'file' && (
+        <div className="flex flex-1 flex-col overflow-auto p-2">
+          <button
+            type="button"
+            onClick={handleSelectFiles}
+            style={{ '--accent': accentColor } as React.CSSProperties}
+            className="group flex items-center justify-center gap-2 rounded-md border border-dashed border-border-subtle py-2 text-sm text-text-gray transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] cursor-pointer"
+          >
+            <span className="h-4 w-4 bg-text-gray [mask-image:url('/icons/add.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] group-hover:bg-[var(--accent)]" />
+            Add Files
+          </button>
+          <ul className="mt-2 flex flex-col gap-1">
+            {(module.files ?? []).map((file) => (
+              <li key={file.id} className="group flex items-center gap-2 text-sm">
+                <span className="h-[18px] w-[18px] shrink-0 bg-text-gray [mask-image:url('/icons/folder.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+                <span
+                  title={file.path}
+                  onClick={() => openPath(file.path)}
+                  className="min-w-0 flex-1 truncate cursor-pointer hover:underline"
+                >
+                  {file.name}
+                </span>
+                <span className="shrink-0 text-xs text-text-gray">{formatFileSize(file.size)}</span>
+                <span className="shrink-0 text-xs text-text-gray">
+                  {new Date(file.addedAt).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeFile(module.id, file.id)}
+                  className="shrink-0 cursor-pointer rounded p-1 opacity-0 transition-opacity hover:bg-hover-gray group-hover:opacity-100"
+                >
+                  <span className="block h-3 w-3 bg-text-gray [mask-image:url('/icons/close.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type ModuleType = 'browser' | 'notes' | 'tasks' | 'bookmark';
+export type ModuleType = 'browser' | 'notes' | 'tasks' | 'bookmark' | 'file';
 
 export interface Task {
   id: string;
@@ -23,6 +23,14 @@ export interface Bookmark {
   tag?: string;
 }
 
+export interface FileAttachment {
+  id: string;
+  path: string;
+  name: string;
+  size: number;
+  addedAt: string;
+}
+
 export interface WorkspaceModule {
   id: string;
   type: ModuleType;
@@ -35,6 +43,7 @@ export interface WorkspaceModule {
   tabs?: BrowserTab[];
   activeTabId?: string;
   bookmarks?: Bookmark[];
+  files?: FileAttachment[];
   name?: string;
   locked?: boolean;
   color?: string;
@@ -108,6 +117,8 @@ interface WorkspaceState {
   addBookmark: (moduleId: string, bookmark: Bookmark) => void;
   removeBookmark: (moduleId: string, bookmarkId: string) => void;
   updateBookmarkTitle: (moduleId: string, bookmarkId: string, title: string) => void;
+  addFile: (moduleId: string, file: FileAttachment) => void;
+  removeFile: (moduleId: string, fileId: string) => void;
   isAddModuleModalOpen: boolean;
   openAddModuleModal: () => void;
   closeAddModuleModal: () => void;
@@ -299,6 +310,20 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               m.id === moduleId
                 ? { ...m, bookmarks: (m.bookmarks ?? []).filter((b) => b.id !== bookmarkId) }
                 : m
+            )
+          ),
+        })),
+      addFile: (moduleId, file) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => (m.id === moduleId ? { ...m, files: [...(m.files ?? []), file] } : m))
+          ),
+        })),
+      removeFile: (moduleId, fileId) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId ? { ...m, files: (m.files ?? []).filter((f) => f.id !== fileId) } : m
             )
           ),
         })),
