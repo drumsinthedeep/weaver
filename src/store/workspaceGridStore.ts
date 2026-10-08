@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type ModuleType = 'browser' | 'notes' | 'tasks' | 'bookmark' | 'file';
+export type ModuleType = 'browser' | 'notes' | 'tasks' | 'bookmark' | 'file' | 'calendar';
 
 export interface Task {
   id: string;
@@ -31,6 +31,14 @@ export interface FileAttachment {
   addedAt: string;
 }
 
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  datetime: string;
+  location?: string;
+  color: string;
+}
+
 export interface WorkspaceModule {
   id: string;
   type: ModuleType;
@@ -44,6 +52,7 @@ export interface WorkspaceModule {
   activeTabId?: string;
   bookmarks?: Bookmark[];
   files?: FileAttachment[];
+  events?: CalendarEvent[];
   name?: string;
   locked?: boolean;
   color?: string;
@@ -119,12 +128,17 @@ interface WorkspaceState {
   updateBookmarkTitle: (moduleId: string, bookmarkId: string, title: string) => void;
   addFile: (moduleId: string, file: FileAttachment) => void;
   removeFile: (moduleId: string, fileId: string) => void;
+  addEvent: (moduleId: string, event: CalendarEvent) => void;
+  removeEvent: (moduleId: string, eventId: string) => void;
   isAddModuleModalOpen: boolean;
   openAddModuleModal: () => void;
   closeAddModuleModal: () => void;
   settingsModuleId: string | null;
   openModuleSettings: (moduleId: string) => void;
   closeModuleSettings: () => void;
+  addEventModuleId: string | null;
+  openAddEventModal: (moduleId: string) => void;
+  closeAddEventModal: () => void;
   isWorkspaceSettingsOpen: boolean;
   openWorkspaceSettings: () => void;
   closeWorkspaceSettings: () => void;
@@ -327,12 +341,29 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             )
           ),
         })),
+      addEvent: (moduleId, event) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) => (m.id === moduleId ? { ...m, events: [...(m.events ?? []), event] } : m))
+          ),
+        })),
+      removeEvent: (moduleId, eventId) =>
+        set((state) => ({
+          workspaces: updateActiveWorkspaceModules(state, (modules) =>
+            modules.map((m) =>
+              m.id === moduleId ? { ...m, events: (m.events ?? []).filter((e) => e.id !== eventId) } : m
+            )
+          ),
+        })),
       isAddModuleModalOpen: false,
       openAddModuleModal: () => set({ isAddModuleModalOpen: true }),
       closeAddModuleModal: () => set({ isAddModuleModalOpen: false }),
       settingsModuleId: null,
       openModuleSettings: (moduleId) => set({ settingsModuleId: moduleId }),
       closeModuleSettings: () => set({ settingsModuleId: null }),
+      addEventModuleId: null,
+      openAddEventModal: (moduleId) => set({ addEventModuleId: moduleId }),
+      closeAddEventModal: () => set({ addEventModuleId: null }),
       isWorkspaceSettingsOpen: false,
       openWorkspaceSettings: () => set({ isWorkspaceSettingsOpen: true }),
       closeWorkspaceSettings: () => set({ isWorkspaceSettingsOpen: false }),

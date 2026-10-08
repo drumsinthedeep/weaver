@@ -20,6 +20,8 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   const updateBookmarkTitle = useWorkspaceStore((state) => state.updateBookmarkTitle);
   const addFile = useWorkspaceStore((state) => state.addFile);
   const removeFile = useWorkspaceStore((state) => state.removeFile);
+  const openAddEventModal = useWorkspaceStore((state) => state.openAddEventModal);
+  const removeEvent = useWorkspaceStore((state) => state.removeEvent);
   const workspaces = useWorkspaceStore((state) => state.workspaces);
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
@@ -82,6 +84,13 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const formatEventDatetime = (datetime: string) => {
+    const date = new Date(datetime);
+    const dateLabel = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const timeLabel = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    return `${dateLabel} · ${timeLabel}`;
   };
 
   const cardStyle: React.CSSProperties = {
@@ -262,6 +271,41 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                 <button
                   type="button"
                   onClick={() => removeFile(module.id, file.id)}
+                  className="shrink-0 cursor-pointer rounded p-1 opacity-0 transition-opacity hover:bg-hover-gray group-hover:opacity-100"
+                >
+                  <span className="block h-3 w-3 bg-text-gray [mask-image:url('/icons/close.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {module.type === 'calendar' && (
+        <div className="flex flex-1 flex-col overflow-auto p-2">
+          <button
+            type="button"
+            onClick={() => openAddEventModal(module.id)}
+            style={{ '--accent': accentColor } as React.CSSProperties}
+            className="group flex items-center justify-center gap-2 rounded-md border border-dashed border-border-subtle py-2 text-sm text-text-gray transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] cursor-pointer"
+          >
+            <span className="h-4 w-4 bg-text-gray [mask-image:url('/icons/add.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] group-hover:bg-[var(--accent)]" />
+            Add Event
+          </button>
+          <ul className="mt-2 flex flex-col gap-2">
+            {(module.events ?? []).map((event) => (
+              <li
+                key={event.id}
+                style={{ borderLeftColor: event.color, borderLeftWidth: '3px' }}
+                className="group flex items-start gap-2 rounded-md border border-border-subtle p-2"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{event.title}</p>
+                  <p className="text-xs text-text-gray">{formatEventDatetime(event.datetime)}</p>
+                  {event.location && <p className="truncate text-xs text-text-gray">{event.location}</p>}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeEvent(module.id, event.id)}
                   className="shrink-0 cursor-pointer rounded p-1 opacity-0 transition-opacity hover:bg-hover-gray group-hover:opacity-100"
                 >
                   <span className="block h-3 w-3 bg-text-gray [mask-image:url('/icons/close.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
