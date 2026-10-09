@@ -1,4 +1,4 @@
-import ReactGridLayout, { useContainerWidth, Layout } from 'react-grid-layout';
+import ReactGridLayout, { useContainerWidth, Layout, noCompactor } from 'react-grid-layout';
 import { useWorkspaceStore, useActiveWorkspaceModules, BACKGROUND_TINT_COLORS } from '../store/workspaceGridStore';
 import Module from './Module';
 
@@ -49,6 +49,7 @@ function WorkspaceGrid(): React.JSX.Element {
           <ReactGridLayout
             layout={layout}
             width={width}
+            compactor={noCompactor}
             gridConfig={{ rowHeight: 80 }}
             resizeConfig={{
               handleComponent: (_axis, ref) => (
