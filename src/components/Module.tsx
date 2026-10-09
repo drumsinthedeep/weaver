@@ -2,6 +2,21 @@ import { forwardRef, useRef } from 'react';
 import { useWorkspaceStore, WorkspaceModule } from '../store/workspaceGridStore';
 import BrowserModule from './BrowserModule';
 
+const EVENT_COLORS = [
+  '#C0392B',
+  '#D2691E',
+  '#8FBC8F',
+  '#5B9BD5',
+  '#A6A6D6',
+  '#5A5A5A',
+  '#D98C8C',
+  '#E4C66B',
+  '#3D7A4D',
+  '#4152A3',
+  '#8E44AD',
+  '#1A1A1A',
+];
+
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
   module: WorkspaceModule;
 }
@@ -292,12 +307,17 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
             Add Event
           </button>
           <ul className="mt-2 flex flex-col gap-2">
-            {(module.events ?? []).map((event) => (
+            {[...(module.events ?? [])]
+              .sort((a, b) => a.datetime.localeCompare(b.datetime))
+              .map((event, index) => (
               <li
                 key={event.id}
-                style={{ borderLeftColor: event.color, borderLeftWidth: '3px' }}
-                className="group flex items-start gap-2 rounded-md border border-border-subtle p-2"
+                className="group flex items-stretch gap-2 rounded-md border border-border-subtle p-2"
               >
+                <span
+                  style={{ backgroundColor: EVENT_COLORS[index % EVENT_COLORS.length] }}
+                  className="w-1 shrink-0 rounded-full"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold">{event.title}</p>
                   <p className="text-xs text-text-gray">{formatEventDatetime(event.datetime)}</p>
@@ -306,7 +326,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                 <button
                   type="button"
                   onClick={() => removeEvent(module.id, event.id)}
-                  className="shrink-0 cursor-pointer rounded p-1 opacity-0 transition-opacity hover:bg-hover-gray group-hover:opacity-100"
+                  className="flex shrink-0 cursor-pointer items-center justify-center rounded p-1 opacity-0 transition-opacity hover:bg-hover-gray group-hover:opacity-100"
                 >
                   <span className="block h-3 w-3 bg-text-gray [mask-image:url('/icons/close.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
                 </button>

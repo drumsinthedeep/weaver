@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useWorkspaceStore, useActiveWorkspaceModules, ACCENT_COLORS } from '../store/workspaceGridStore';
+import { useWorkspaceStore, useActiveWorkspaceModules } from '../store/workspaceGridStore';
 
 export default function AddEventModal() {
   const addEventModuleId = useWorkspaceStore((state) => state.addEventModuleId);
@@ -22,8 +22,7 @@ export default function AddEventModal() {
     const datetime = datetimeInputRef.current?.value;
     if (!title || !datetime) return;
     const location = locationInputRef.current?.value.trim() || undefined;
-    const color = ACCENT_COLORS[(module.events?.length ?? 0) % ACCENT_COLORS.length];
-    addEvent(module.id, { id: crypto.randomUUID(), title, datetime, location, color });
+    addEvent(module.id, { id: crypto.randomUUID(), title, datetime, location });
     closeAddEventModal();
   };
 

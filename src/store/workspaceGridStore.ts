@@ -36,7 +36,6 @@ export interface CalendarEvent {
   title: string;
   datetime: string;
   location?: string;
-  color: string;
 }
 
 export interface WorkspaceModule {
