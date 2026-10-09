@@ -37,7 +37,7 @@ export default function Sidebar() {
           type="button"
           onClick={() => setActiveView('home')}
           title={collapsed ? 'Home' : undefined}
-          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
+          className={`group cursor-pointer p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
             ${activeView === 'home'
               ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
               : 'text-light-black hover:bg-hover-gray'
@@ -60,7 +60,7 @@ export default function Sidebar() {
           type="button"
           onClick={() => setActiveView('workspace')}
           title={collapsed ? 'Workspaces' : undefined}
-          className={`group p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
+          className={`group cursor-pointer p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
             ${activeView === 'workspace'
               ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
               : 'text-light-black hover:bg-hover-gray'
