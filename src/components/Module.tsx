@@ -1,21 +1,6 @@
 import { forwardRef, useRef } from 'react';
-import { useWorkspaceStore, WorkspaceModule } from '../store/workspaceGridStore';
+import { useWorkspaceStore, WorkspaceModule, ACCENT_COLORS } from '../store/workspaceGridStore';
 import BrowserModule from './BrowserModule';
-
-const EVENT_COLORS = [
-  '#C0392B',
-  '#D2691E',
-  '#8FBC8F',
-  '#5B9BD5',
-  '#A6A6D6',
-  '#5A5A5A',
-  '#D98C8C',
-  '#E4C66B',
-  '#3D7A4D',
-  '#4152A3',
-  '#8E44AD',
-  '#1A1A1A',
-];
 
 interface ModuleProps extends React.HTMLAttributes<HTMLDivElement> {
   module: WorkspaceModule;
@@ -315,7 +300,7 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
                 className="group flex items-stretch gap-2 rounded-md border border-border-subtle p-2"
               >
                 <span
-                  style={{ backgroundColor: EVENT_COLORS[index % EVENT_COLORS.length] }}
+                  style={{ backgroundColor: ACCENT_COLORS[index % ACCENT_COLORS.length] }}
                   className="w-1 shrink-0 rounded-full"
                 />
                 <div className="min-w-0 flex-1">

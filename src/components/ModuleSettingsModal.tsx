@@ -1,6 +1,4 @@
-import { useWorkspaceStore, useActiveWorkspaceModules } from '../store/workspaceGridStore';
-
-const MODULE_COLORS = ['#6366F1', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#6B7280'];
+import { useWorkspaceStore, useActiveWorkspaceModules, ACCENT_COLORS } from '../store/workspaceGridStore';
 
 export default function ModuleSettingsModal() {
   const settingsModuleId = useWorkspaceStore((state) => state.settingsModuleId);
@@ -50,8 +48,8 @@ export default function ModuleSettingsModal() {
           </div>
           <div>
             <label className="mb-1 block text-[14px] font-medium text-text-gray">Color</label>
-            <div className="flex gap-2">
-              {MODULE_COLORS.map((color) => (
+            <div className="flex flex-wrap gap-2">
+              {ACCENT_COLORS.map((color) => (
                 <button
                   key={color}
                   type="button"

@@ -74,7 +74,21 @@ export interface Profile {
   sidebarCollapsed?: boolean;
 }
 
-export const ACCENT_COLORS = ['#6366F1', '#1a5edc', '#38BDF8', '#22C55E', '#EF4444', '#F59E0B', '#64748B', '#EC4899'];
+export const ACCENT_COLORS = [
+  '#6366F1',
+  '#C0392B',
+  '#D2691E',
+  '#8FBC8F',
+  '#5B9BD5',
+  '#A6A6D6',
+  '#5A5A5A',
+  '#D98C8C',
+  '#E4C66B',
+  '#3D7A4D',
+  '#4152A3',
+  '#8E44AD',
+  '#1A1A1A',
+];
 
 export interface Workspace {
   id: string;
