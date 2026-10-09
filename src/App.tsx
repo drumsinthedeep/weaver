@@ -4,7 +4,6 @@ import Sidebar from './components/Sidebar';
 import WorkspaceGrid from './components/WorkspaceGrid';
 import Home from './components/Home';
 import AddModuleModal from './components/AddModuleModal';
-import ModuleSettingsModal from './components/ModuleSettingsModal';
 import AddEventModal from './components/AddEventModal';
 import WorkspaceSettingsModal from './components/WorkspaceSettingsModal';
 import SettingsModal from './components/SettingsModal';
@@ -26,7 +25,6 @@ function App() {
           </>
         )}
         <AddModuleModal />
-        <ModuleSettingsModal />
         <AddEventModal />
         <WorkspaceSettingsModal />
         <SettingsModal />

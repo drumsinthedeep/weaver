@@ -1,4 +1,5 @@
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useWorkspaceStore, WorkspaceModule, ACCENT_COLORS } from '../store/workspaceGridStore';
 import BrowserModule from './BrowserModule';
 
@@ -10,7 +11,14 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
   { module, style, className, onMouseDown, onMouseUp, onTouchEnd, children, ...rest },
   ref
 ) {
+  const settingsModuleId = useWorkspaceStore((state) => state.settingsModuleId);
   const openModuleSettings = useWorkspaceStore((state) => state.openModuleSettings);
+  const closeModuleSettings = useWorkspaceStore((state) => state.closeModuleSettings);
+  const renameModule = useWorkspaceStore((state) => state.renameModule);
+  const updateModuleColor = useWorkspaceStore((state) => state.updateModuleColor);
+  const toggleModuleLock = useWorkspaceStore((state) => state.toggleModuleLock);
+  const duplicateModule = useWorkspaceStore((state) => state.duplicateModule);
+  const removeModule = useWorkspaceStore((state) => state.removeModule);
   const updateModuleContent = useWorkspaceStore((state) => state.updateModuleContent);
   const addTask = useWorkspaceStore((state) => state.addTask);
   const toggleTask = useWorkspaceStore((state) => state.toggleTask);
@@ -93,6 +101,39 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
     return `${dateLabel} · ${timeLabel}`;
   };
 
+  const isSettingsOpen = settingsModuleId === module.id;
+  const [confirmingRemove, setConfirmingRemove] = useState(false);
+  const gearButtonRef = useRef<HTMLButtonElement>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number } | null>(null);
+
+  useEffect(() => {
+    if (!isSettingsOpen) setConfirmingRemove(false);
+  }, [isSettingsOpen]);
+
+  useEffect(() => {
+    if (!confirmingRemove) return;
+    const timeout = setTimeout(() => setConfirmingRemove(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [confirmingRemove]);
+
+  const handleRemoveClick = () => {
+    if (confirmingRemove) {
+      removeModule(module.id);
+    } else {
+      setConfirmingRemove(true);
+    }
+  };
+
+  const handleToggleSettings = () => {
+    if (isSettingsOpen) {
+      closeModuleSettings();
+      return;
+    }
+    const rect = gearButtonRef.current?.getBoundingClientRect();
+    if (rect) setMenuPosition({ top: rect.bottom + 4, left: rect.right - 256 });
+    openModuleSettings(module.id);
+  };
+
   const cardStyle: React.CSSProperties = {
     ...style,
     ...(module.color && { borderTopColor: module.color, borderTopWidth: '4px' }),
@@ -121,9 +162,81 @@ const Module = forwardRef<HTMLDivElement, ModuleProps>(function Module(
           style={{ maskImage: `url(/icons/${module.type === 'file' ? 'folder' : module.type}.svg)` }}
         />
         <h3 className="text-xs">{module.name || module.type}</h3>
-        <button className="ml-auto p-2 flex items-center cursor-pointer hover:bg-hover-gray rounded" onClick={() => openModuleSettings(module.id)}>
+        <button
+          ref={gearButtonRef}
+          type="button"
+          className="ml-auto p-2 flex items-center cursor-pointer hover:bg-hover-gray rounded"
+          onClick={handleToggleSettings}
+        >
           <span className="inline-block w-[14px] h-[14px] bg-text-gray [mask-image:url('/icons/settings.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
         </button>
+        {isSettingsOpen &&
+          menuPosition &&
+          createPortal(
+            <>
+              <div className="fixed inset-0 z-20" onClick={closeModuleSettings} />
+              <div
+                style={{ top: menuPosition.top, left: menuPosition.left }}
+                className="fixed z-30 w-64 overflow-hidden rounded-lg border border-border-subtle bg-white normal-case tracking-normal text-light-black shadow-lg"
+              >
+                <div className="p-2">
+                  <input
+                    type="text"
+                    defaultValue={module.name ?? ''}
+                    onBlur={(e) => renameModule(module.id, e.target.value)}
+                    placeholder={module.type.toUpperCase()}
+                    className="w-full rounded border border-gray-200 px-2 py-1 text-sm outline-none placeholder:text-text-gray"
+                  />
+                </div>
+                <div className="border-t border-border-subtle p-2">
+                  <p className="mb-1.5 px-1 text-xs font-medium text-text-gray">Color</p>
+                  <div className="flex flex-wrap gap-1.5 px-1">
+                    {ACCENT_COLORS.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => updateModuleColor(module.id, module.color === color ? undefined : color)}
+                        style={{ backgroundColor: color }}
+                        className={`h-5 w-5 cursor-pointer rounded-full ${
+                          module.color === color ? 'ring-2 ring-offset-1 ring-light-black' : ''
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="border-t border-border-subtle py-1 px-1">
+                  <label className="flex cursor-pointer rounded items-center gap-2 px-3 py-2 text-sm hover:bg-hover-gray">
+                    <input
+                      type="checkbox"
+                      className="cursor-pointer"
+                      checked={module.locked ?? false}
+                      onChange={() => toggleModuleLock(module.id)}
+                    />
+                    Lock position &amp; size
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => duplicateModule(module.id)}
+                    className="flex w-full rounded cursor-pointer items-center px-3 py-2 text-left text-sm hover:bg-hover-gray"
+                  >
+                    Duplicate Module
+                  </button>
+                </div>
+                <div className="border-t border-border-subtle py-1 px-1">
+                  <button
+                    type="button"
+                    onClick={handleRemoveClick}
+                    className={`flex w-full rounded cursor-pointer items-center px-3 py-2 text-left text-sm text-danger ${
+                      confirmingRemove ? 'animate-pulse font-medium' : 'hover:bg-hover-gray'
+                    }`}
+                  >
+                    {confirmingRemove ? 'Click to Confirm' : 'Remove Module'}
+                  </button>
+                </div>
+              </div>
+            </>,
+            document.body
+          )}
       </div>
       {module.type === 'browser' && <BrowserModule module={module} />}
       {module.type === 'notes' && (
