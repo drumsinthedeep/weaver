@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+html,
+body {
+  height: 100%;
+}
+
 @font-face {
   font-family: "Raleway";
   src: url("/fonts/raleway/Raleway-Thin.ttf") format("truetype");

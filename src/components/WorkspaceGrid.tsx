@@ -40,37 +40,35 @@ function WorkspaceGrid(): React.JSX.Element {
   }));
 
   return (
-    <div>
-      <div
-        ref={containerRef as React.RefObject<HTMLDivElement>}
-        className="h-screen mr-[-14px]"
-      >
-        {mounted && (
-          <ReactGridLayout
-            layout={layout}
-            width={width}
-            compactor={noCompactor}
-            gridConfig={{ rowHeight: 80 }}
-            resizeConfig={{
-              handleComponent: (_axis, ref) => (
-                <div
-                  ref={ref as React.RefObject<HTMLDivElement>}
-                  className="absolute bottom-0 right-0 h-4 w-4 resize-handle m-1 cursor-pointer"
-                >
-                  <img src="/icons/resize.svg" alt="" className="w-full" />
-                </div>
-              ),
-            }}
-            dragConfig={{ cancel: 'textarea', handle: '.drag-target' }}
-            onLayoutChange={handleLayoutChange}
-            style={{ backgroundColor: BACKGROUND_TINT_COLORS[backgroundTint] }}
-          >
-            {modules.map((module) => (
-              <Module key={module.id} module={module} />
-            ))}
-          </ReactGridLayout>
-        )}
-      </div>
+    <div
+      ref={containerRef as React.RefObject<HTMLDivElement>}
+      className="min-h-0 flex-1 overflow-y-auto mr-[-14px]"
+    >
+      {mounted && (
+        <ReactGridLayout
+          layout={layout}
+          width={width}
+          compactor={noCompactor}
+          gridConfig={{ rowHeight: 80 }}
+          resizeConfig={{
+            handleComponent: (_axis, ref) => (
+              <div
+                ref={ref as React.RefObject<HTMLDivElement>}
+                className="absolute bottom-0 right-0 h-4 w-4 resize-handle m-1 cursor-pointer"
+              >
+                <img src="/icons/resize.svg" alt="" className="w-full" />
+              </div>
+            ),
+          }}
+          dragConfig={{ cancel: 'textarea', handle: '.drag-target' }}
+          onLayoutChange={handleLayoutChange}
+          style={{ backgroundColor: BACKGROUND_TINT_COLORS[backgroundTint] }}
+        >
+          {modules.map((module) => (
+            <Module key={module.id} module={module} />
+          ))}
+        </ReactGridLayout>
+      )}
     </div>
   );
 }
