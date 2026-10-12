@@ -5,6 +5,7 @@ import WorkspaceGrid from './components/WorkspaceGrid';
 import Home from './components/Home';
 import AddModuleModal from './components/AddModuleModal';
 import AddEventModal from './components/AddEventModal';
+import SearchModal from './components/SearchModal';
 import WorkspaceSettingsModal from './components/WorkspaceSettingsModal';
 import SettingsModal from './components/SettingsModal';
 import { useWorkspaceStore } from './store/workspaceGridStore';
@@ -26,6 +27,7 @@ function App() {
         )}
         <AddModuleModal />
         <AddEventModal />
+        <SearchModal />
         <WorkspaceSettingsModal />
         <SettingsModal />
       </div>

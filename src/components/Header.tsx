@@ -3,6 +3,7 @@ import { useWorkspaceStore } from '../store/workspaceGridStore';
 
 export default function Header() {
   const openAddModuleModal = useWorkspaceStore((state) => state.openAddModuleModal);
+  const openSearch = useWorkspaceStore((state) => state.openSearch);
   const workspaces = useWorkspaceStore((state) => state.workspaces);
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const setActiveWorkspace = useWorkspaceStore((state) => state.setActiveWorkspace);
@@ -98,6 +99,15 @@ export default function Header() {
         )}
       </div>
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={openSearch}
+          className="flex w-64 cursor-pointer items-center gap-2 rounded-md border border-border-subtle px-3 py-[9px] text-sm text-text-gray hover:bg-hover-gray"
+        >
+          <span className="h-4 w-4 shrink-0 bg-text-gray [mask-image:url('/icons/search.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]" />
+          <span>Search workspace...</span>
+          <span className="ml-auto rounded bg-hover-gray px-1.5 py-0.5 text-xs text-text-gray">⌘K</span>
+        </button>
         <button className="flex items-center cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium hover:bg-hover-gray border-border-subtle border" onClick={openWorkspaceSettings}>
           <img src="/icons/sliders.svg" alt="" className="w-4" />
           Customize

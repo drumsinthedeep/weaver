@@ -146,6 +146,9 @@ interface WorkspaceState {
   isAddModuleModalOpen: boolean;
   openAddModuleModal: () => void;
   closeAddModuleModal: () => void;
+  isSearchOpen: boolean;
+  openSearch: () => void;
+  closeSearch: () => void;
   settingsModuleId: string | null;
   openModuleSettings: (moduleId: string) => void;
   closeModuleSettings: () => void;
@@ -371,6 +374,9 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       isAddModuleModalOpen: false,
       openAddModuleModal: () => set({ isAddModuleModalOpen: true }),
       closeAddModuleModal: () => set({ isAddModuleModalOpen: false }),
+      isSearchOpen: false,
+      openSearch: () => set({ isSearchOpen: true }),
+      closeSearch: () => set({ isSearchOpen: false }),
       settingsModuleId: null,
       openModuleSettings: (moduleId) => set({ settingsModuleId: moduleId }),
       closeModuleSettings: () => set({ settingsModuleId: null }),
