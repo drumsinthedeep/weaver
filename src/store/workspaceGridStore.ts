@@ -98,6 +98,8 @@ export interface Workspace {
   backgroundTint?: BackgroundTint;
   moduleStyle?: ModuleStyle;
   modules: WorkspaceModule[];
+  archived?: boolean;
+  favorited?: boolean;
 }
 
 type WorkspaceSettings = Partial<
@@ -105,7 +107,7 @@ type WorkspaceSettings = Partial<
 >;
 
 export type SettingsTab = 'account' | 'appearance' | 'notifications' | 'shortcuts';
-export type AppView = 'home' | 'workspace';
+export type AppView = 'home' | 'workspace' | 'archive' | 'favorites';
 
 interface WorkspaceState {
   profile: Profile;
@@ -123,6 +125,8 @@ interface WorkspaceState {
   removeWorkspace: (id: string) => void;
   renameWorkspace: (id: string, name: string) => void;
   updateWorkspace: (id: string, updates: WorkspaceSettings) => void;
+  toggleWorkspaceArchived: (id: string) => void;
+  toggleWorkspaceFavorited: (id: string) => void;
   setActiveWorkspace: (id: string) => void;
   addModule: (module: WorkspaceModule) => void;
   removeModule: (id: string) => void;
@@ -214,6 +218,20 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       updateWorkspace: (id, updates) =>
         set((state) => ({
           workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, ...updates } : w)),
+        })),
+      toggleWorkspaceArchived: (id) =>
+        set((state) => {
+          const workspaces = state.workspaces.map((w) => (w.id === id ? { ...w, archived: !w.archived } : w));
+          const target = workspaces.find((w) => w.id === id);
+          if (target?.archived && state.activeWorkspaceId === id) {
+            const fallback = workspaces.find((w) => !w.archived && w.id !== id);
+            if (fallback) return { workspaces, activeWorkspaceId: fallback.id };
+          }
+          return { workspaces };
+        }),
+      toggleWorkspaceFavorited: (id) =>
+        set((state) => ({
+          workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, favorited: !w.favorited } : w)),
         })),
       setActiveWorkspace: (id) => set({ activeWorkspaceId: id }),
 

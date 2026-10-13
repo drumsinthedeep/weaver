@@ -61,7 +61,7 @@ export default function SearchModal() {
 
   const allResults = useMemo<Omit<SearchResult, 'flatIndex'>[]>(() => {
     const items: Omit<SearchResult, 'flatIndex'>[] = [];
-    for (const workspace of workspaces) {
+    for (const workspace of workspaces.filter((w) => !w.archived)) {
       items.push({
         id: workspace.id,
         type: 'workspace',

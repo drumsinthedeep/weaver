@@ -79,15 +79,20 @@ export default function Sidebar() {
             Workspaces
           </span>
         </button>
-        <a
-          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'w-fit' : ''}`}
-          href="#"
+        <button
+          type="button"
+          onClick={() => setActiveView('archive')}
           title={collapsed ? 'Archive' : undefined}
+          className={`group cursor-pointer p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
+            ${activeView === 'archive'
+              ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
+              : 'text-light-black hover:bg-hover-gray'
+          }`}
         >
           <span
-            className={`mb-[1px] inline-block h-5 w-5 shrink-0 bg-text-gray [mask-image:url('/icons/archive.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+            className={`mb-[1px] inline-block h-5 w-5 shrink-0 [mask-image:url('/icons/archive.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
               collapsed ? '' : 'mr-2'
-            }`}
+            } ${activeView === 'archive' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
           />
           <span
             className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
@@ -96,16 +101,21 @@ export default function Sidebar() {
           >
             Archive
           </span>
-        </a>
-        <a
-          className={`group text-light-black p-2 flex items-center leading-normal hover:bg-hover-gray rounded ${collapsed ? 'w-fit' : ''}`}
-          href="#"
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveView('favorites')}
           title={collapsed ? 'Favorites' : undefined}
+          className={`group cursor-pointer p-2 flex items-center leading-normal rounded ${collapsed ? 'w-fit' : ''}
+            ${activeView === 'favorites'
+              ? 'bg-[var(--accent-tint)] font-semibold text-[var(--accent)]'
+              : 'text-light-black hover:bg-hover-gray'
+          }`}
         >
           <span
-            className={`mb-[1px] inline-block h-5 w-5 shrink-0 bg-text-gray [mask-image:url('/icons/star.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+            className={`mb-[1px] inline-block h-5 w-5 shrink-0 [mask-image:url('/icons/star.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
               collapsed ? '' : 'mr-2'
-            }`}
+            } ${activeView === 'favorites' ? 'bg-[var(--accent)]' : 'bg-text-gray'}`}
           />
           <span
             className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
@@ -114,7 +124,7 @@ export default function Sidebar() {
           >
             Favorites
           </span>
-        </a>
+        </button>
       </div>
       <div className="relative mt-auto border-t border-border-subtle pt-2">
         <button

@@ -3,6 +3,8 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import WorkspaceGrid from './components/WorkspaceGrid';
 import Home from './components/Home';
+import Archive from './components/Archive';
+import Favorites from './components/Favorites';
 import AddModuleModal from './components/AddModuleModal';
 import AddEventModal from './components/AddEventModal';
 import SearchModal from './components/SearchModal';
@@ -19,6 +21,10 @@ function App() {
       <div className="flex flex-1 flex-col">
         {activeView === 'home' ? (
           <Home />
+        ) : activeView === 'archive' ? (
+          <Archive />
+        ) : activeView === 'favorites' ? (
+          <Favorites />
         ) : (
           <>
             <Header />

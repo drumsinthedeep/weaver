@@ -45,6 +45,7 @@ export default function WorkspaceSettingsModal() {
   const activeWorkspaceId = useWorkspaceStore((state) => state.activeWorkspaceId);
   const updateWorkspace = useWorkspaceStore((state) => state.updateWorkspace);
   const removeWorkspace = useWorkspaceStore((state) => state.removeWorkspace);
+  const toggleWorkspaceArchived = useWorkspaceStore((state) => state.toggleWorkspaceArchived);
   const workspace = workspaces.find((w) => w.id === activeWorkspaceId);
   const canDelete = workspaces.length > 1;
   const [activeTab, setActiveTab] = useState<'general' | 'appearance'>('general');
@@ -66,6 +67,12 @@ export default function WorkspaceSettingsModal() {
   const handleDelete = () => {
     if (!workspace) return;
     removeWorkspace(workspace.id);
+    closeWorkspaceSettings();
+  };
+
+  const handleArchiveToggle = () => {
+    if (!workspace) return;
+    toggleWorkspaceArchived(workspace.id);
     closeWorkspaceSettings();
   };
 
@@ -148,6 +155,15 @@ export default function WorkspaceSettingsModal() {
                   />
                 </div>
                 <div className="mt-4 border-t border-border-subtle pt-4">
+                  <button
+                    type="button"
+                    onClick={handleArchiveToggle}
+                    className="flex cursor-pointer items-center gap-2 rounded-md border border-gray-200 px-[14px] py-[9px] text-sm font-medium hover:bg-hover-gray"
+                  >
+                    {workspace?.archived ? 'Unarchive Workspace' : 'Archive Workspace'}
+                  </button>
+                </div>
+                <div className="border-t border-border-subtle pt-4">
                   <button
                     type="button"
                     disabled={!canDelete}

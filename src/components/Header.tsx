@@ -10,10 +10,12 @@ export default function Header() {
   const addWorkspace = useWorkspaceStore((state) => state.addWorkspace);
   const openWorkspaceSettings = useWorkspaceStore((state) => state.openWorkspaceSettings);
   const renameWorkspace = useWorkspaceStore((state) => state.renameWorkspace);
+  const toggleWorkspaceFavorited = useWorkspaceStore((state) => state.toggleWorkspaceFavorited);
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [renamingWorkspaceId, setRenamingWorkspaceId] = useState<string | null>(null);
   const activeWorkspace = workspaces.find((w) => w.id === activeWorkspaceId);
   const accentColor = activeWorkspace?.accentColor ?? '#6366F1';
+  const switchableWorkspaces = workspaces.filter((w) => !w.archived || w.id === activeWorkspaceId);
 
   const handleAddWorkspace = () => {
     addWorkspace();
@@ -27,7 +29,7 @@ export default function Header() {
 
   return (
     <div className="flex items-center sticky top-0 z-10 justify-between bg-white border-b border-border-subtle px-4 py-4 mr-[-14px]">
-      <div className="relative">
+      <div className="relative flex items-center gap-1">
         <button
           type="button"
           onClick={() => setIsSwitcherOpen((open) => !open)}
@@ -36,13 +38,28 @@ export default function Header() {
           {activeWorkspace?.name ?? 'Workspace'}
           <span className="text-xs">▾</span>
         </button>
+        {activeWorkspace && (
+          <button
+            type="button"
+            onClick={() => toggleWorkspaceFavorited(activeWorkspace.id)}
+            title={activeWorkspace.favorited ? 'Unfavorite workspace' : 'Favorite workspace'}
+            className="cursor-pointer rounded p-1 hover:bg-hover-gray"
+          >
+            <span
+              className={`block h-4 w-4 [mask-image:url('/icons/star.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+                activeWorkspace.favorited ? '' : 'bg-text-gray'
+              }`}
+              style={activeWorkspace.favorited ? { backgroundColor: accentColor } : undefined}
+            />
+          </button>
+        )}
         {isSwitcherOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsSwitcherOpen(false)} />
             <div className="absolute left-0 top-full z-20 mt-2 w-56 rounded-md border border-border-subtle bg-white shadow-md">
               <span className="block px-4 pt-3 pb-1 text-xs font-semibold text-text-gray">WORKSPACES</span>
               <ul className="max-h-60 overflow-auto p-1">
-                {workspaces.map((workspace) => (
+                {switchableWorkspaces.map((workspace) => (
                   <li key={workspace.id}>
                     {renamingWorkspaceId === workspace.id ? (
                       <input

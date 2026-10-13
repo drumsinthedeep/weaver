@@ -1,4 +1,5 @@
 import { useWorkspaceStore } from '../store/workspaceGridStore';
+import WorkspaceCard from './WorkspaceCard';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -18,8 +19,9 @@ export default function Home() {
   const setActiveWorkspace = useWorkspaceStore((state) => state.setActiveWorkspace);
   const setActiveView = useWorkspaceStore((state) => state.setActiveView);
   const accentColor = profile.accentColor ?? '#6366F1';
-  const totalModules = workspaces.reduce((sum, w) => sum + w.modules.length, 0);
-  const allModules = workspaces.flatMap((w) => w.modules);
+  const visibleWorkspaces = workspaces.filter((w) => !w.archived);
+  const totalModules = visibleWorkspaces.reduce((sum, w) => sum + w.modules.length, 0);
+  const allModules = visibleWorkspaces.flatMap((w) => w.modules);
   const openTasks = allModules
     .filter((m) => m.type === 'tasks')
     .flatMap((m) => m.tasks ?? [])
@@ -29,7 +31,7 @@ export default function Home() {
   //   .flatMap((m) => m.tabs ?? []).length;
 
   const stats = [
-    { label: 'Workspaces', value: workspaces.length },
+    { label: 'Workspaces', value: visibleWorkspaces.length },
     { label: 'Total Modules', value: totalModules },
     { label: 'Open Tasks', value: openTasks },
     { label: 'Saved Items', value: [] },
@@ -55,7 +57,7 @@ export default function Home() {
               {getGreeting()}, {profile.name || 'there'}
             </h1>
             <p className="mt-1 text-sm text-text-gray">
-              You have {workspaces.length} workspace{workspaces.length === 1 ? '' : 's'} and {totalModules} modules across your project{totalModules === 1 ? '' : 's'}.
+              You have {visibleWorkspaces.length} workspace{visibleWorkspaces.length === 1 ? '' : 's'} and {totalModules} modules across your project{totalModules === 1 ? '' : 's'}.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -96,38 +98,14 @@ export default function Home() {
       <div className="border-t border-border-subtle p-8 pt-6">
         <h4 className="mb-[14px] font-semibold text-sm">Your Workspaces</h4>
         <div className="grid grid-cols-2 gap-4">
-          {workspaces.map((workspace) => {
-            const taskModules = workspace.modules.filter((m) => m.type === 'tasks');
-            const allTasks = taskModules.flatMap((m) => m.tasks ?? []);
-            const doneTasks = allTasks.filter((t) => t.done).length;
-
-            return (
-              <button
-                key={workspace.id}
-                type="button"
-                onClick={() => openWorkspace(workspace.id)}
-                className="cursor-pointer rounded-lg bg-white p-4 text-left shadow-subtle hover:shadow-xl transition-shadow"
-              >
-                <p className="font-semibold">{workspace.name}</p>
-                <p className="text-sm text-text-gray">
-                  {workspace.modules.length} module{workspace.modules.length === 1 ? '' : 's'}
-                </p>
-                {allTasks.length > 0 && (
-                  <div className="mt-3">
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-hover-gray">
-                      <div
-                        className="h-full rounded-full"
-                        style={{ width: `${(doneTasks / allTasks.length) * 100}%`, backgroundColor: accentColor }}
-                      />
-                    </div>
-                    <p className="mt-1 text-xs text-text-gray">
-                      {doneTasks}/{allTasks.length} tasks complete
-                    </p>
-                  </div>
-                )}
-              </button>
-            );
-          })}
+          {visibleWorkspaces.map((workspace) => (
+            <WorkspaceCard
+              key={workspace.id}
+              workspace={workspace}
+              accentColor={accentColor}
+              onClick={() => openWorkspace(workspace.id)}
+            />
+          ))}
         </div>
       </div>
     </div>
