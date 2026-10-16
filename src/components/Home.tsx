@@ -22,19 +22,55 @@ export default function Home() {
   const visibleWorkspaces = workspaces.filter((w) => !w.archived);
   const totalModules = visibleWorkspaces.reduce((sum, w) => sum + w.modules.length, 0);
   const allModules = visibleWorkspaces.flatMap((w) => w.modules);
-  const openTasks = allModules
-    .filter((m) => m.type === 'tasks')
-    .flatMap((m) => m.tasks ?? [])
-    .filter((t) => !t.done).length;
-  // const savedItems = allModules
-  //   .filter((m) => m.type === 'bookmark')
-  //   .flatMap((m) => m.tabs ?? []).length;
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const updatedToday = visibleWorkspaces.filter(
+    (w) => w.lastActivityAt && new Date(w.lastActivityAt).getTime() >= todayStart.getTime()
+  ).length;
+  const taskModulesWithOpenTasks = allModules.filter(
+    (m) => m.type === 'tasks' && (m.tasks ?? []).some((t) => !t.done)
+  );
+  const allTasks = allModules.filter((m) => m.type === 'tasks').flatMap((m) => m.tasks ?? []);
+  const openTasks = allTasks.filter((t) => !t.done).length;
+  const completedTasks = allTasks.filter((t) => t.done).length;
+  const now = Date.now();
+  const sevenDaysOut = now + 7 * 24 * 60 * 60 * 1000;
+  const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+  const completedThisWeek = allTasks.filter(
+    (t) => t.completedAt && new Date(t.completedAt).getTime() >= sevenDaysAgo
+  ).length;
+  const openTaskWorkspaceCount = new Set(
+    visibleWorkspaces
+      .filter((w) => w.modules.some((m) => taskModulesWithOpenTasks.includes(m)))
+      .map((w) => w.id)
+  ).size;
+  const upcomingEvents = allModules
+    .filter((m) => m.type === 'calendar')
+    .flatMap((m) => m.events ?? [])
+    .filter((e) => {
+      const time = new Date(e.datetime).getTime();
+      return time >= now && time <= sevenDaysOut;
+    }).length;
 
   const stats = [
-    { label: 'Workspaces', value: visibleWorkspaces.length },
-    { label: 'Total Modules', value: totalModules },
-    { label: 'Open Tasks', value: openTasks },
-    { label: 'Saved Items', value: [] },
+    {
+      label: 'Workspaces',
+      value: visibleWorkspaces.length,
+      sub: updatedToday > 0 ? `${updatedToday} updated today` : null,
+    },
+    {
+      label: 'Open Tasks',
+      value: openTasks,
+      sub: openTaskWorkspaceCount > 0
+        ? `across ${openTaskWorkspaceCount} workspace${openTaskWorkspaceCount === 1 ? '' : 's'}`
+        : null,
+    },
+    {
+      label: 'Tasks Completed',
+      value: completedTasks,
+      sub: `${completedThisWeek} completed this week`,
+    },
+    { label: 'Upcoming Events', value: upcomingEvents, sub: 'next 7 days' },
   ];
 
   const openWorkspace = (id: string) => {
@@ -91,6 +127,7 @@ export default function Home() {
             <div key={stat.label} className="rounded-lg border border-border-subtle bg-secondary-gray p-4">
               <p className="text-2xl font-semibold">{stat.value}</p>
               <p className="text-sm text-text-gray">{stat.label}</p>
+              {stat.sub && <p className="mt-1 text-xs text-text-gray/70">{stat.sub}</p>}
             </div>
           ))}
         </div>

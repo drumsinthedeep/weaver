@@ -7,6 +7,7 @@ export interface Task {
   id: string;
   label: string;
   done: boolean;
+  completedAt?: string;
 }
 
 export interface BrowserTab {
@@ -100,6 +101,7 @@ export interface Workspace {
   modules: WorkspaceModule[];
   archived?: boolean;
   favorited?: boolean;
+  lastActivityAt?: string;
 }
 
 type WorkspaceSettings = Partial<
@@ -173,7 +175,9 @@ function updateActiveWorkspaceModules(
   updater: (modules: WorkspaceModule[]) => WorkspaceModule[]
 ): Workspace[] {
   return state.workspaces.map((w) =>
-    w.id === state.activeWorkspaceId ? { ...w, modules: updater(w.modules) } : w
+    w.id === state.activeWorkspaceId
+      ? { ...w, modules: updater(w.modules), lastActivityAt: new Date().toISOString() }
+      : w
   );
 }
 
@@ -213,11 +217,15 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         }),
       renameWorkspace: (id, name) =>
         set((state) => ({
-          workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, name } : w)),
+          workspaces: state.workspaces.map((w) =>
+            w.id === id ? { ...w, name, lastActivityAt: new Date().toISOString() } : w
+          ),
         })),
       updateWorkspace: (id, updates) =>
         set((state) => ({
-          workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, ...updates } : w)),
+          workspaces: state.workspaces.map((w) =>
+            w.id === id ? { ...w, ...updates, lastActivityAt: new Date().toISOString() } : w
+          ),
         })),
       toggleWorkspaceArchived: (id) =>
         set((state) => {
@@ -272,7 +280,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               m.id === moduleId
                 ? {
                     ...m,
-                    tasks: (m.tasks ?? []).map((t) => (t.id === taskId ? { ...t, done: !t.done } : t)),
+                    tasks: (m.tasks ?? []).map((t) =>
+                      t.id === taskId
+                        ? { ...t, done: !t.done, completedAt: !t.done ? new Date().toISOString() : undefined }
+                        : t
+                    ),
                   }
                 : m
             )
