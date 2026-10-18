@@ -103,6 +103,7 @@ export interface Workspace {
   favorited?: boolean;
   lastActivityAt?: string;
   lastOpenedAt?: string;
+  archivedAt?: string;
 }
 
 type WorkspaceSettings = Partial<
@@ -230,7 +231,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         })),
       toggleWorkspaceArchived: (id) =>
         set((state) => {
-          const workspaces = state.workspaces.map((w) => (w.id === id ? { ...w, archived: !w.archived } : w));
+          const workspaces = state.workspaces.map((w) =>
+            w.id === id
+              ? { ...w, archived: !w.archived, archivedAt: !w.archived ? new Date().toISOString() : undefined }
+              : w
+          );
           const target = workspaces.find((w) => w.id === id);
           if (target?.archived && state.activeWorkspaceId === id) {
             const fallback = workspaces.find((w) => !w.archived && w.id !== id);
