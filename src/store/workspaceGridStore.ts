@@ -102,6 +102,7 @@ export interface Workspace {
   archived?: boolean;
   favorited?: boolean;
   lastActivityAt?: string;
+  lastOpenedAt?: string;
 }
 
 type WorkspaceSettings = Partial<
@@ -203,7 +204,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           const id = crypto.randomUUID();
           const name = `Workspace ${state.workspaces.length + 1}`;
           return {
-            workspaces: [...state.workspaces, { id, name, modules: [] }],
+            workspaces: [...state.workspaces, { id, name, modules: [], lastOpenedAt: new Date().toISOString() }],
             activeWorkspaceId: id,
           };
         }),
@@ -241,7 +242,13 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         set((state) => ({
           workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, favorited: !w.favorited } : w)),
         })),
-      setActiveWorkspace: (id) => set({ activeWorkspaceId: id }),
+      setActiveWorkspace: (id) =>
+        set((state) => ({
+          activeWorkspaceId: id,
+          workspaces: state.workspaces.map((w) =>
+            w.id === id ? { ...w, lastOpenedAt: new Date().toISOString() } : w
+          ),
+        })),
 
       addModule: (module) =>
         set((state) => ({

@@ -19,7 +19,14 @@ export default function Home() {
   const setActiveWorkspace = useWorkspaceStore((state) => state.setActiveWorkspace);
   const setActiveView = useWorkspaceStore((state) => state.setActiveView);
   const accentColor = profile.accentColor ?? '#6366F1';
-  const visibleWorkspaces = workspaces.filter((w) => !w.archived);
+  const visibleWorkspaces = workspaces
+    .filter((w) => !w.archived)
+    .sort((a, b) => {
+      if (!!a.favorited !== !!b.favorited) return a.favorited ? -1 : 1;
+      const aTime = a.lastOpenedAt ? new Date(a.lastOpenedAt).getTime() : -Infinity;
+      const bTime = b.lastOpenedAt ? new Date(b.lastOpenedAt).getTime() : -Infinity;
+      return bTime - aTime;
+    });
   const totalModules = visibleWorkspaces.reduce((sum, w) => sum + w.modules.length, 0);
   const allModules = visibleWorkspaces.flatMap((w) => w.modules);
   const todayStart = new Date();
@@ -125,8 +132,8 @@ export default function Home() {
         <div className="mt-6 grid grid-cols-4 gap-4">
           {stats.map((stat) => (
             <div key={stat.label} className="rounded-lg border border-border-subtle bg-secondary-gray p-4">
-              <p className="text-2xl font-semibold">{stat.value}</p>
-              <p className="text-sm text-text-gray">{stat.label}</p>
+              <p className="text-2xl">{stat.value}</p>
+              <p className="text-sm">{stat.label}</p>
               {stat.sub && <p className="mt-1 text-xs text-text-gray/70">{stat.sub}</p>}
             </div>
           ))}
