@@ -104,6 +104,7 @@ export interface Workspace {
   lastActivityAt?: string;
   lastOpenedAt?: string;
   archivedAt?: string;
+  favoritedAt?: string;
 }
 
 type WorkspaceSettings = Partial<
@@ -245,7 +246,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         }),
       toggleWorkspaceFavorited: (id) =>
         set((state) => ({
-          workspaces: state.workspaces.map((w) => (w.id === id ? { ...w, favorited: !w.favorited } : w)),
+          workspaces: state.workspaces.map((w) =>
+            w.id === id
+              ? { ...w, favorited: !w.favorited, favoritedAt: !w.favorited ? new Date().toISOString() : undefined }
+              : w
+          ),
         })),
       setActiveWorkspace: (id) =>
         set((state) => ({
