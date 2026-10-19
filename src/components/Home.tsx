@@ -1,5 +1,6 @@
 import { useWorkspaceStore } from '../store/workspaceGridStore';
 import WorkspaceCard from './WorkspaceCard';
+import RecentActivity from './RecentActivity';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -139,18 +140,21 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <div className="border-t border-border-subtle p-8 pt-6">
-        <h4 className="mb-[14px] font-semibold text-sm">Your Workspaces</h4>
-        <div className="grid grid-cols-2 items-start gap-4">
-          {visibleWorkspaces.map((workspace) => (
-            <WorkspaceCard
-              key={workspace.id}
-              workspace={workspace}
-              accentColor={accentColor}
-              onClick={() => openWorkspace(workspace.id)}
-            />
-          ))}
+      <div className="grid grid-cols-3 gap-8 border-t border-border-subtle p-8 pt-6">
+        <div className="col-span-2">
+          <h4 className="mb-[14px] font-semibold text-sm">Your Workspaces</h4>
+          <div className="grid grid-cols-2 items-start gap-4">
+            {visibleWorkspaces.map((workspace) => (
+              <WorkspaceCard
+                key={workspace.id}
+                workspace={workspace}
+                accentColor={accentColor}
+                onClick={() => openWorkspace(workspace.id)}
+              />
+            ))}
+          </div>
         </div>
+        <RecentActivity />
       </div>
     </div>
   );

@@ -108,6 +108,16 @@ export interface Workspace {
   favoritedAt?: string;
 }
 
+export type ActivityType = 'task_completed' | 'note_edited' | 'bookmark_added' | 'file_added' | 'event_created' | 'browser_tab_added';
+
+export interface ActivityEntry {
+  id: string;
+  type: ActivityType;
+  workspaceId: string;
+  count: number;
+  timestamp: string;
+}
+
 type WorkspaceSettings = Partial<
   Pick<Workspace, 'name' | 'description' | 'accentColor' | 'backgroundTint' | 'moduleStyle'>
 >;
@@ -127,6 +137,7 @@ interface WorkspaceState {
   setActiveView: (view: AppView) => void;
   workspaces: Workspace[];
   activeWorkspaceId: string;
+  activityLog: ActivityEntry[];
   addWorkspace: () => void;
   removeWorkspace: (id: string) => void;
   renameWorkspace: (id: string, name: string) => void;
@@ -174,6 +185,21 @@ interface WorkspaceState {
   updateModuleColor: (id: string, color: string | undefined) => void;
 }
 
+function pushActivity(activityLog: ActivityEntry[], workspaceId: string, type: ActivityType): ActivityEntry[] {
+  const [latest, ...rest] = activityLog;
+  if (latest && latest.type === type && latest.workspaceId === workspaceId) {
+    return [{ ...latest, count: latest.count + 1, timestamp: new Date().toISOString() }, ...rest];
+  }
+  const entry: ActivityEntry = {
+    id: crypto.randomUUID(),
+    type,
+    workspaceId,
+    count: 1,
+    timestamp: new Date().toISOString(),
+  };
+  return [entry, ...activityLog].slice(0, 50);
+}
+
 function updateActiveWorkspaceModules(
   state: WorkspaceState,
   updater: (modules: WorkspaceModule[]) => WorkspaceModule[]
@@ -202,6 +228,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       setActiveView: (view) => set({ activeView: view }),
       workspaces: [{ id: defaultWorkspaceId, name: 'My Workspace', modules: [] }],
       activeWorkspaceId: defaultWorkspaceId,
+      activityLog: [],
       addWorkspace: () =>
         set((state) => {
           const id = crypto.randomUUID();
@@ -280,6 +307,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           workspaces: updateActiveWorkspaceModules(state, (modules) =>
             modules.map((m) => (m.id === id ? { ...m, content } : m))
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'note_edited'),
         })),
       addTask: (moduleId, label) =>
         set((state) => ({
@@ -292,22 +320,32 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           ),
         })),
       toggleTask: (moduleId, taskId) =>
-        set((state) => ({
-          workspaces: updateActiveWorkspaceModules(state, (modules) =>
-            modules.map((m) =>
-              m.id === moduleId
-                ? {
-                    ...m,
-                    tasks: (m.tasks ?? []).map((t) =>
-                      t.id === taskId
-                        ? { ...t, done: !t.done, completedAt: !t.done ? new Date().toISOString() : undefined }
-                        : t
-                    ),
-                  }
-                : m
-            )
-          ),
-        })),
+        set((state) => {
+          const module = state.workspaces
+            .find((w) => w.id === state.activeWorkspaceId)
+            ?.modules.find((m) => m.id === moduleId);
+          const task = module?.tasks?.find((t) => t.id === taskId);
+          const willBeDone = task ? !task.done : false;
+          return {
+            workspaces: updateActiveWorkspaceModules(state, (modules) =>
+              modules.map((m) =>
+                m.id === moduleId
+                  ? {
+                      ...m,
+                      tasks: (m.tasks ?? []).map((t) =>
+                        t.id === taskId
+                          ? { ...t, done: !t.done, completedAt: !t.done ? new Date().toISOString() : undefined }
+                          : t
+                      ),
+                    }
+                  : m
+              )
+            ),
+            activityLog: willBeDone
+              ? pushActivity(state.activityLog, state.activeWorkspaceId, 'task_completed')
+              : state.activityLog,
+          };
+        }),
       removeTask: (moduleId, taskId) =>
         set((state) => ({
           workspaces: updateActiveWorkspaceModules(state, (modules) =>
@@ -325,6 +363,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               return { ...m, tabs: [...(m.tabs ?? []), newTab], activeTabId: newTab.id };
             })
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'browser_tab_added'),
         })),
       closeBrowserTab: (moduleId, tabId) =>
         set((state) => ({
@@ -370,6 +409,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               m.id === moduleId ? { ...m, bookmarks: [...(m.bookmarks ?? []), bookmark] } : m
             )
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'bookmark_added'),
         })),
       updateBookmarkTitle: (moduleId, bookmarkId, title) =>
         set((state) => ({
@@ -396,6 +436,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           workspaces: updateActiveWorkspaceModules(state, (modules) =>
             modules.map((m) => (m.id === moduleId ? { ...m, files: [...(m.files ?? []), file] } : m))
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'file_added'),
         })),
       removeFile: (moduleId, fileId) =>
         set((state) => ({
@@ -410,6 +451,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           workspaces: updateActiveWorkspaceModules(state, (modules) =>
             modules.map((m) => (m.id === moduleId ? { ...m, events: [...(m.events ?? []), event] } : m))
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'event_created'),
         })),
       removeEvent: (moduleId, eventId) =>
         set((state) => ({
@@ -479,6 +521,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
         workspaces: state.workspaces,
         activeWorkspaceId: state.activeWorkspaceId,
         profile: state.profile,
+        activityLog: state.activityLog,
       }),
     }
   )

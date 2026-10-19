@@ -1,22 +1,10 @@
 import { Workspace } from '../store/workspaceGridStore';
+import { formatRelativeTime } from '../lib/formatRelativeTime';
 
 interface WorkspaceCardProps {
   workspace: Workspace;
   accentColor: string;
   onClick: () => void;
-}
-
-function formatLastOpened(iso: string): string {
-  const diffMs = Date.now() - new Date(iso).getTime();
-  const diffMin = Math.floor(diffMs / 60000);
-  if (diffMin < 1) return 'just now';
-  if (diffMin < 60) return `${diffMin}m ago`;
-  const diffHours = Math.floor(diffMin / 60);
-  if (diffHours < 24) return `${diffHours}h ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays}d ago`;
-  const diffWeeks = Math.floor(diffDays / 7);
-  return `${diffWeeks}w ago`;
 }
 
 export default function WorkspaceCard({ workspace, accentColor, onClick }: WorkspaceCardProps) {
@@ -35,7 +23,7 @@ export default function WorkspaceCard({ workspace, accentColor, onClick }: Works
           {workspace.name}
         </p>
         {workspace.lastOpenedAt && (
-          <p className="shrink-0 text-xs text-text-gray">{formatLastOpened(workspace.lastOpenedAt)}</p>
+          <p className="shrink-0 text-xs text-text-gray">{formatRelativeTime(workspace.lastOpenedAt)}</p>
         )}
         {workspace.favorited && (
           <div className="absolute right-0 top-[20px] bg-purple-600 p-1 rounded-md">
