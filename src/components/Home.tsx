@@ -140,8 +140,8 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-8 border-t border-border-subtle p-8 pt-6">
-        <div className="col-span-2">
+      <div className="flex gap-8 border-t border-border-subtle p-8 pt-6">
+        <div className="min-w-0 flex-1">
           <h4 className="mb-[14px] font-semibold text-sm">Your Workspaces</h4>
           <div className="grid grid-cols-2 items-start gap-4">
             {visibleWorkspaces.map((workspace) => (
@@ -154,7 +154,9 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <RecentActivity />
+        <div className="w-72 shrink-0">
+          <RecentActivity />
+        </div>
       </div>
     </div>
   );

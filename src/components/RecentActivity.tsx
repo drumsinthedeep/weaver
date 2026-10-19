@@ -3,17 +3,26 @@ import { formatRelativeTime } from '../lib/formatRelativeTime';
 
 const ACTIVITY_ICON: Record<ActivityType, string> = {
   task_completed: '/icons/check.svg',
+  task_added: '/icons/tasks.svg',
+  task_removed: '/icons/tasks.svg',
   note_edited: '/icons/notes.svg',
   bookmark_added: '/icons/bookmark.svg',
   file_added: '/icons/folder.svg',
   event_created: '/icons/calendar.svg',
+  event_removed: '/icons/calendar.svg',
   browser_tab_added: '/icons/browser.svg',
+  module_added: '/icons/grid.svg',
+  module_removed: '/icons/grid.svg',
 };
 
 function describeActivity(type: ActivityType, count: number): string {
   switch (type) {
     case 'task_completed':
       return 'Task marked complete';
+    case 'task_added':
+      return count === 1 ? 'Task added' : `${count} tasks added`;
+    case 'task_removed':
+      return count === 1 ? 'Task removed' : `${count} tasks removed`;
     case 'note_edited':
       return 'Notes edited';
     case 'bookmark_added':
@@ -22,8 +31,14 @@ function describeActivity(type: ActivityType, count: number): string {
       return count === 1 ? 'File added' : `${count} files added`;
     case 'event_created':
       return 'Calendar event created';
+    case 'event_removed':
+      return 'Calendar event removed';
     case 'browser_tab_added':
       return count === 1 ? 'Browser tab added' : 'Browser tabs updated';
+    case 'module_added':
+      return count === 1 ? 'Module added' : `${count} modules added`;
+    case 'module_removed':
+      return count === 1 ? 'Module removed' : `${count} modules removed`;
   }
 }
 

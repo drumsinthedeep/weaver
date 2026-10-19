@@ -108,7 +108,18 @@ export interface Workspace {
   favoritedAt?: string;
 }
 
-export type ActivityType = 'task_completed' | 'note_edited' | 'bookmark_added' | 'file_added' | 'event_created' | 'browser_tab_added';
+export type ActivityType =
+  | 'task_completed'
+  | 'task_added'
+  | 'task_removed'
+  | 'note_edited'
+  | 'bookmark_added'
+  | 'file_added'
+  | 'event_created'
+  | 'event_removed'
+  | 'browser_tab_added'
+  | 'module_added'
+  | 'module_removed';
 
 export interface ActivityEntry {
   id: string;
@@ -291,12 +302,14 @@ export const useWorkspaceStore = create<WorkspaceState>()(
       addModule: (module) =>
         set((state) => ({
           workspaces: updateActiveWorkspaceModules(state, (modules) => [...modules, module]),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'module_added'),
         })),
       removeModule: (id) =>
         set((state) => ({
           workspaces: updateActiveWorkspaceModules(state, (modules) =>
             modules.filter((m) => m.id !== id)
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'module_removed'),
         })),
       setModules: (modules) =>
         set((state) => ({
@@ -318,6 +331,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
                 : m
             )
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'task_added'),
         })),
       toggleTask: (moduleId, taskId) =>
         set((state) => {
@@ -353,6 +367,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               m.id === moduleId ? { ...m, tasks: (m.tasks ?? []).filter((t) => t.id !== taskId) } : m
             )
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'task_removed'),
         })),
       addBrowserTab: (moduleId, url) =>
         set((state) => ({
@@ -460,6 +475,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               m.id === moduleId ? { ...m, events: (m.events ?? []).filter((e) => e.id !== eventId) } : m
             )
           ),
+          activityLog: pushActivity(state.activityLog, state.activeWorkspaceId, 'event_removed'),
         })),
       isAddModuleModalOpen: false,
       openAddModuleModal: () => set({ isAddModuleModalOpen: true }),
