@@ -45,8 +45,10 @@ function describeActivity(type: ActivityType, count: number): string {
 export default function RecentActivity() {
   const activityLog = useWorkspaceStore((state) => state.activityLog);
   const workspaces = useWorkspaceStore((state) => state.workspaces);
+  const profile = useWorkspaceStore((state) => state.profile);
   const setActiveWorkspace = useWorkspaceStore((state) => state.setActiveWorkspace);
   const setActiveView = useWorkspaceStore((state) => state.setActiveView);
+  const accentColor = profile.accentColor ?? '#6366F1';
 
   const entries = activityLog.slice(0, 8);
 
@@ -61,11 +63,14 @@ export default function RecentActivity() {
       {entries.length === 0 ? (
         <p className="text-sm text-text-gray">No activity yet.</p>
       ) : (
-        <div className="flex flex-col gap-4">
-          {entries.map((entry) => {
+        <div className="rounded-lg bg-white shadow-subtle px-[14px]">
+          {entries.map((entry, index) => {
             const workspace = workspaces.find((w) => w.id === entry.workspaceId);
             return (
-              <div key={entry.id} className="flex items-start gap-2">
+              <div
+                key={entry.id}
+                className={`flex items-start gap-2 py-[14px] ${index > 0 ? 'border-t border-border-subtle' : ''}`}
+              >
                 <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-secondary-gray">
                   <span
                     className="h-3.5 w-3.5 bg-text-gray [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain]"
@@ -79,7 +84,7 @@ export default function RecentActivity() {
                       <button
                         type="button"
                         onClick={() => openWorkspace(workspace.id)}
-                        style={{ color: workspace.accentColor ?? '#6366F1' }}
+                        style={{ color: accentColor }}
                         className="cursor-pointer font-medium hover:underline"
                       >
                         {workspace.name}
