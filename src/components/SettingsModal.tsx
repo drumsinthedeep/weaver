@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useWorkspaceStore, SettingsTab, Profile, ACCENT_COLORS } from '../store/workspaceGridStore';
+import Avatar from './Avatar';
 
 const NAV_ITEMS: { value: SettingsTab; label: string; }[] = [
   { value: 'account', label: 'Account' },
@@ -12,6 +13,7 @@ interface ProfileDraft {
   name: string;
   email: string;
   accentColor: string;
+  avatarUrl?: string;
 }
 
 function toDraft(profile: Profile): ProfileDraft {
@@ -19,6 +21,7 @@ function toDraft(profile: Profile): ProfileDraft {
     name: profile.name,
     email: profile.email,
     accentColor: profile.accentColor ?? ACCENT_COLORS[0],
+    avatarUrl: profile.avatarUrl,
   };
 }
 
@@ -44,7 +47,11 @@ export default function SettingsModal() {
     closeSettings();
   };
 
-  const initial = draft.name.trim().charAt(0).toUpperCase() || '?';
+  const handleUploadPhoto = async () => {
+    const dataUrl: string | null = await window.ipcRenderer.invoke('select-image');
+    if (dataUrl) setDraft({ ...draft, avatarUrl: dataUrl });
+  };
+
   const activeLabel = NAV_ITEMS.find((item) => item.value === activeTab)?.label ?? '';
 
   return (
@@ -93,15 +100,32 @@ export default function SettingsModal() {
             {activeTab === 'account' && (
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <span
-                    style={{ backgroundColor: draft.accentColor }}
-                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-xl font-semibold text-white"
-                  >
-                    {initial}
-                  </span>
+                  <Avatar name={draft.name} avatarUrl={draft.avatarUrl} accentColor={draft.accentColor} size={56} />
                   <div>
                     <p className="font-semibold">{draft.name || 'Unnamed'}</p>
                     <p className="text-sm text-text-gray">{draft.email || 'No email set'}</p>
+                    <div className="mt-1 flex items-center gap-2 text-sm">
+                      <button
+                        type="button"
+                        onClick={handleUploadPhoto}
+                        style={{ color: draft.accentColor }}
+                        className="cursor-pointer font-medium hover:opacity-80"
+                      >
+                        Upload Photo
+                      </button>
+                      {draft.avatarUrl && (
+                        <>
+                          <span className="text-text-gray">&middot;</span>
+                          <button
+                            type="button"
+                            onClick={() => setDraft({ ...draft, avatarUrl: undefined })}
+                            className="cursor-pointer font-medium text-text-gray hover:text-light-black"
+                          >
+                            Remove
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="border-t border-border-subtle pt-3 flex">

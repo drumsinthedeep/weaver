@@ -70,6 +70,19 @@ app.on('activate', () => {
 ipcMain.handle('open-external', (_event, url: string) => shell.openExternal(url))
 ipcMain.handle('open-path', (_event, filePath: string) => shell.openPath(filePath))
 
+ipcMain.handle('select-image', async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'] }],
+  })
+  if (result.canceled || result.filePaths.length === 0) return null
+  const filePath = result.filePaths[0]
+  const buffer = await fs.readFile(filePath)
+  const ext = path.extname(filePath).slice(1).toLowerCase()
+  const mime = ext === 'jpg' ? 'jpeg' : ext
+  return `data:image/${mime};base64,${buffer.toString('base64')}`
+})
+
 ipcMain.handle('select-files', async () => {
   const result = await dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] })
   if (result.canceled) return []

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useWorkspaceStore } from '../store/workspaceGridStore';
+import Avatar from './Avatar';
 
 export default function Sidebar() {
   const profile = useWorkspaceStore((state) => state.profile);
@@ -135,7 +136,13 @@ export default function Sidebar() {
             collapsed ? 'justify-center' : ''
           }`}
         >
-          <img src="/icons/user.svg" alt="" className={`w-5 h-5 shrink-0 ${collapsed ? '' : 'mr-2'}`} />
+          <Avatar
+            name={profile.name}
+            avatarUrl={profile.avatarUrl}
+            accentColor={accentColor}
+            size={26}
+            className={collapsed ? '' : 'mr-2'}
+          />
           <span
             className={`overflow-hidden whitespace-nowrap transition-all ease-in duration-200 ${
               collapsed ? 'max-w-0 opacity-0' : 'max-w-[140px] opacity-100'

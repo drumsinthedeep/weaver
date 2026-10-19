@@ -73,6 +73,7 @@ export interface Profile {
   email: string;
   accentColor?: string;
   sidebarCollapsed?: boolean;
+  avatarUrl?: string;
 }
 
 export const ACCENT_COLORS = [
