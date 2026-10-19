@@ -148,7 +148,7 @@ export default function Sidebar() {
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsAccountMenuOpen(false)} />
             <div className="absolute bottom-full left-0 z-20 mb-2 w-56 rounded-md border border-border-subtle bg-white shadow-md">
-              <ul className="p-1">
+              <ul className="p-1 flex flex-col gap-1">
                 <li>
                   <button
                     type="button"

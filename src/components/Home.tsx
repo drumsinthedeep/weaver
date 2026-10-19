@@ -141,7 +141,7 @@ export default function Home() {
       </div>
       <div className="border-t border-border-subtle p-8 pt-6">
         <h4 className="mb-[14px] font-semibold text-sm">Your Workspaces</h4>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 items-start gap-4">
           {visibleWorkspaces.map((workspace) => (
             <WorkspaceCard
               key={workspace.id}

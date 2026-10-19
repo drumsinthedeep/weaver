@@ -38,21 +38,6 @@ export default function Header() {
           {activeWorkspace?.name ?? 'Workspace'}
           <span className="text-xs">▾</span>
         </button>
-        {activeWorkspace && (
-          <button
-            type="button"
-            onClick={() => toggleWorkspaceFavorited(activeWorkspace.id)}
-            title={activeWorkspace.favorited ? 'Unfavorite workspace' : 'Favorite workspace'}
-            className="cursor-pointer rounded p-1 hover:bg-hover-gray"
-          >
-            <span
-              className={`block h-4 w-4 [mask-image:url('/icons/star.svg')] [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
-                activeWorkspace.favorited ? '' : 'bg-text-gray'
-              }`}
-              style={activeWorkspace.favorited ? { backgroundColor: accentColor } : undefined}
-            />
-          </button>
-        )}
         {isSwitcherOpen && (
           <>
             <div className="fixed inset-0 z-10" onClick={() => setIsSwitcherOpen(false)} />
@@ -125,6 +110,27 @@ export default function Header() {
           <span>Search workspace...</span>
           <span className="ml-auto rounded bg-hover-gray px-1.5 py-0.5 text-xs text-text-gray">⌘K</span>
         </button>
+        {activeWorkspace && (
+          <button
+            type="button"
+            onClick={() => toggleWorkspaceFavorited(activeWorkspace.id)}
+            style={activeWorkspace.favorited ? { borderColor: accentColor, color: accentColor } : undefined}
+            className={`flex items-center cursor-pointer gap-2 rounded-md border px-[14px] py-[9px] text-sm font-medium ${
+              activeWorkspace.favorited ? '' : 'border-border-subtle hover:bg-hover-gray'
+            }`}
+          >
+            <span
+              className={`h-4 w-4 shrink-0 [mask-repeat:no-repeat] [mask-position:center] [mask-size:contain] ${
+                activeWorkspace.favorited ? '' : 'bg-text-gray'
+              }`}
+              style={{
+                maskImage: `url(/icons/${activeWorkspace.favorited ? 'star-white' : 'star'}.svg)`,
+                backgroundColor: activeWorkspace.favorited ? accentColor : undefined,
+              }}
+            />
+            {activeWorkspace.favorited ? 'Favorited' : 'Favorite'}
+          </button>
+        )}
         <button className="flex items-center cursor-pointer gap-2 rounded-md px-[14px] py-[9px] text-sm font-medium hover:bg-hover-gray border-border-subtle border" onClick={openWorkspaceSettings}>
           <img src="/icons/sliders.svg" alt="" className="w-4" />
           Customize
