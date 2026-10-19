@@ -85,7 +85,7 @@ export default function RecentActivity() {
                         type="button"
                         onClick={() => openWorkspace(workspace.id)}
                         style={{ color: accentColor }}
-                        className="cursor-pointer font-medium hover:underline"
+                        className="cursor-pointer font-bold hover:underline"
                       >
                         {workspace.name}
                       </button>
