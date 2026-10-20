@@ -24,7 +24,7 @@ export default function AddModuleModal() {
   const bookmarkType: ModuleTypeOption = { name: 'Bookmark', icon: '/icons/bookmark.svg', iconWidth: 'w-8', description: 'Save and organize important links.', type: 'bookmark' };
   const fileType: ModuleTypeOption = { name: 'File', icon: '/icons/folder.svg', iconWidth: 'w-9', description: 'Attach and organize documents and media.', type: 'file' };
   const calendarType: ModuleTypeOption = { name: 'Calendar', icon: '/icons/calendar.svg', iconWidth: 'w-8', description: 'Events, reminders, and scheduling.', type: 'calendar' };
-  const customType: ModuleTypeOption = { name: 'Custom', icon: '/icons/settings.svg', iconWidth: 'w-8', description: 'Custom modules for specific use cases.', type: 'custom' };
+  const customType: ModuleTypeOption = { name: 'Custom', icon: '/icons/settings.svg', iconWidth: 'w-8', description: 'Custom modules for specific use cases.', type: null };
 
   const handleSelectType = (type: ModuleType | null) => {
     if (!type) return;

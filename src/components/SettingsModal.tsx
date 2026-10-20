@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useWorkspaceStore, SettingsTab, Profile, ACCENT_COLORS } from '../store/workspaceGridStore';
 import Avatar from './Avatar';
 
-const NAV_ITEMS: { value: SettingsTab; label: string; }[] = [
+const NAV_ITEMS: { value: SettingsTab; label: string; disabled?: boolean }[] = [
   { value: 'account', label: 'Account' },
   { value: 'appearance', label: 'Appearance' },
-  { value: 'notifications', label: 'Notifications' },
-  { value: 'shortcuts', label: 'Shortcuts' },
+  { value: 'notifications', label: 'Notifications', disabled: true },
+  { value: 'shortcuts', label: 'Shortcuts', disabled: true },
 ];
 
 interface ProfileDraft {
@@ -73,11 +73,14 @@ export default function SettingsModal() {
             <button
               key={item.value}
               type="button"
+              disabled={item.disabled}
               onClick={() => setActiveTab(item.value)}
               style={activeTab === item.value ? { backgroundColor: `${draft.accentColor}1a`, color: draft.accentColor } : undefined}
-              className={`flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm cursor-pointer ${
-                activeTab === item.value ? 'font-semibold' : 'hover:bg-hover-gray'
-              }`}
+              className={`flex items-center gap-2 rounded-md px-3 py-2 text-left text-sm ${
+                item.disabled
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'cursor-pointer'
+              } ${activeTab === item.value ? 'font-semibold' : item.disabled ? '' : 'hover:bg-hover-gray'}`}
             >
               {item.label}
             </button>

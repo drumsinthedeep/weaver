@@ -117,14 +117,14 @@ export default function Home() {
             <button
               type="button"
               disabled
-              className="rounded-md border border-gray-200 px-[14px] py-[9px] text-sm font-medium opacity-50"
+              className="cursor-not-allowed rounded-md border border-gray-200 px-[14px] py-[9px] text-sm font-medium opacity-50"
             >
               Browse Templates
             </button>
             <button
               type="button"
               disabled
-              className="rounded-md border border-gray-200 px-[14px] py-[9px] text-sm font-medium opacity-50"
+              className="cursor-not-allowed rounded-md border border-gray-200 px-[14px] py-[9px] text-sm font-medium opacity-50"
             >
               Import Data
             </button>
